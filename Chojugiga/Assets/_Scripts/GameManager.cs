@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
 
 	// TIME
 	float time = 0f;
-	float TIME_DEFAULT = 10f;
+	float TIME_DEFAULT = 30f;
 
 	float X = 2f;
 
@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (answer);
 			return;
 		}
+		Debug.Log ("getAnswer:" + _questionCtrl.getAnswer () + " myAnswer:" + pAnswer);
 		if (_questionCtrl.getAnswer () == pAnswer) {
 			answer = "CORRECT!";
 			addScore (ADD_SCORE);

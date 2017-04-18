@@ -6,7 +6,7 @@ public class QuestionCtrl : MonoBehaviour {
 	public List<Question> questionList;
 	public int questionNum = 10;
 
-	int counter = 0;
+	int counter = 1;
 
 	// Use this for initialization
 	void Start () {
@@ -19,13 +19,13 @@ public class QuestionCtrl : MonoBehaviour {
 	}
 
 	public Sprite getQSprite() {
-		Debug.Log ("imagePath:" + questionList [counter].questionImage.imagePath);
-//		Sprite sp = Resources.Load<Sprite>(questionList [counter].questionImage.imagePath);
-		Sprite sp = questionList[counter].sprite;
-
 		counter++;
 		if (counter >= questionNum)
-			counter = 0;
+			counter = 1;
+		
+		Debug.Log ("imagePath:" + questionList [counter].questionImage.imagePath);
+		Sprite sp = questionList[counter].sprite;
+
 		return sp;
 	}
 
@@ -86,7 +86,7 @@ public class QuestionCtrl : MonoBehaviour {
 		QuestionImage qi = new QuestionImage ();
 		qi.id = pId;
 		qi.animalType = getAnimalType (qi.id);
-		qi.imagePath = "image_" + qi.id.ToString ();
+		qi.imagePath = getImagePath(qi.animalType);
 
 		Const.Position pos = getPosition ();
 		Const.Color col = getColor ();
@@ -97,15 +97,81 @@ public class QuestionCtrl : MonoBehaviour {
 		return q;
 	}
 
+	int[] images_max_count = {20,20,10}; // 0:frog 1:rabbit 2:others
+
+	List<List<int>> list_of_images_list; // 0:frog 1:rabbit 2:others
+	List<int> frog_images_list;
+	List<int> rabbit_images_list;
+	List<int> others_images_list;
+
+	// シャッフルされた配列の何番目かを記録しておく
+	int[] images_counter_array = {1,1,1}; // 0:frog 1:rabbit 2:others
+	string[] FOLDER_PATH = {
+		"01_frogs/f_",
+		"02_rabbits/r_",
+		"03_others/o_"
+	};
+
+	void initImagesRandom() {
+		list_of_images_list = new List<List<int>> ();
+
+		frog_images_list = new List<int> ();
+		rabbit_images_list = new List<int> ();
+		others_images_list = new List<int> ();
+
+		for (int i = 1; i <= images_max_count[(int)Const.AnimalType.FROG]; i++) {			
+			if (i < images_max_count[(int)Const.AnimalType.OTHERS]) {
+				others_images_list.Add (i);
+			}
+			frog_images_list.Add (i);
+			rabbit_images_list.Add (i);
+		}
+
+		// シャッフルしてlist_of_images_listに格納する
+		frog_images_list.Shuffle ();
+		rabbit_images_list.Shuffle ();
+		others_images_list.Shuffle ();
+
+		list_of_images_list.Add (frog_images_list);
+		list_of_images_list.Add (rabbit_images_list);
+		list_of_images_list.Add (others_images_list);
+
+
+	}
+
+	string getImagePath(Const.AnimalType pAt) {
+		string path = "";
+		int imagesCounterIndex = (int)pAt;
+		path = FOLDER_PATH [imagesCounterIndex];
+		path += images_counter_array [imagesCounterIndex].ToString ();
+
+		// max越えたら1に戻す
+		images_counter_array [imagesCounterIndex]++;
+		if (images_counter_array [imagesCounterIndex] > images_max_count [imagesCounterIndex]) {
+			images_counter_array [imagesCounterIndex] = 1;
+		}
+			
+		return path;
+	}
+
 	// テスト用
 	Const.AnimalType getAnimalType(int pId) {
-		if (pId <= 4) {
+		int n = Random.Range(0,100);
+		if (n < 40) {
 			return Const.AnimalType.FROG;
 		}
-		if (pId <= 8) {
+		if (n < 80) {
 			return Const.AnimalType.RABBIT;
 		}
 		return Const.AnimalType.OTHERS;
+
+//		if (pId <= 4) {
+//			return Const.AnimalType.FROG;
+//		}
+//		if (pId <= 8) {
+//			return Const.AnimalType.RABBIT;
+//		}
+//		return Const.AnimalType.OTHERS;
 	}
 
 	Const.Position getPosition() {
