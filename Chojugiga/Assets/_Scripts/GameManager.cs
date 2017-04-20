@@ -75,10 +75,6 @@ public class GameManager : MonoBehaviour {
 		}
 
 		countTime ();
-
-		if (Input.GetMouseButtonDown (0)) {
-			UpdateImage ();
-		}
 	}
 
 	#region TIME
@@ -146,6 +142,27 @@ public class GameManager : MonoBehaviour {
 	void disableLabelAnswer() {
 		_labelAnswer.gameObject.SetActive (false);
 	}
+	#endregion
+
+	#region Action
+	// Receivers
+	public void actionBtn(GameObject pGameObject) {
+		this.gameObject.SendMessage ("action" + pGameObject.name);
+	}
+
+	public void flick() {
+		answerDown ();
+	}
+
+	// Private Methods
+	void actionButtonLeft() {
+		answerLeft ();
+	}
+
+	void actionButtonRight() {
+		answerRight ();
+	}
+
 	#endregion
 
 	void UpdateImage() {
