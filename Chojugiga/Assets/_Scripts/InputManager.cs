@@ -5,6 +5,9 @@ using UnityEngine;
 public class InputManager : MonoBehaviour {
 	GameManager _gameManager;
 
+	public bool disabled = false;
+	float disabledTime = 0f;
+
 	// Use this for initialization
 	void Start () {
 		_gameManager = this.gameObject.GetComponent<GameManager> ();
@@ -12,7 +15,18 @@ public class InputManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (disabled) {
+			disabledTime -= Time.deltaTime;
+			if (disabledTime <= 0) {
+				disabled = false;
+			}
+		}
 		flick ();
+	}
+
+	public void setDisabled(float pTime) {
+		disabledTime = pTime;
+		disabled = true;
 	}
 
 	enum TouchState {
@@ -23,25 +37,64 @@ public class InputManager : MonoBehaviour {
 	}
 
 	TouchState touchState;
+	float touchingTime = 0f;
 	float touchingCounter = 0f;
 	float flickDistance = 0f;
+
+	public float TAP_TIME = 0.1f; // タップして離すまでの時間で、そのUpがタップかそうでないかを決める
 	public float FLICK_TIME = 0.2f;
 	public float FLICK_DISTANCE = 2f;
 
+	Vector3 firstTouchPosition;
 	Vector3 touchPosition;
 	Vector3 lastTouchPosition;
 	Vector3 velocity;
 
 	void flick() {
+		if (Input.GetMouseButtonDown (0)) {
+			firstTouchPosition = Input.mousePosition;
+			touchPosition = Input.mousePosition;
+			lastTouchPosition = Input.mousePosition;
+
+			touchingTime = 0;
+			touchingCounter = 0;
+		} else if (Input.GetMouseButton (0)) {
+			touchingCounter += Time.deltaTime;
+			touchingTime += Time.deltaTime;
+
+			touchPosition = Input.mousePosition;
+
+			if (touchingCounter >= FLICK_TIME) { // FLICK_TIME秒過ぎたら距離計測をリセットする
+				touchingCounter = 0;
+				lastTouchPosition = Input.mousePosition;
+			}
+		} else if (Input.GetMouseButtonUp (0)) {
+			touchPosition = Input.mousePosition;
+			flickDistance = Vector2.Distance (touchPosition, lastTouchPosition);
+			if (checkFlick ()) {
+				_gameManager.flick ();
+			}
+		}
+
+		return;
+
+
 		switch (touchState) {
 		case TouchState.NONE:
 			if (Input.GetMouseButtonDown (0)) {
 				touchState = TouchState.TOUCHING;
+				firstTouchPosition = Input.mousePosition;
 				lastTouchPosition = Input.mousePosition;
+				touchingTime = 0;
+				touchingCounter = 0;
 			}
 			break;
 		case TouchState.TOUCHING:
 			touchingCounter += Time.deltaTime;
+			touchingTime += Time.deltaTime;
+
+			touchPosition = Input.mousePosition;
+
 			if (touchingCounter >= FLICK_TIME) { // FLICK_TIME秒過ぎたら距離計測をリセットする
 				touchingCounter = 0;
 				lastTouchPosition = Input.mousePosition;
@@ -49,7 +102,7 @@ public class InputManager : MonoBehaviour {
 				
 			if (Input.GetMouseButtonUp (0)) {
 				touchState = TouchState.NONE;
-				touchPosition = Input.mousePosition;
+				flickDistance = Vector2.Distance (touchPosition, lastTouchPosition);
 
 				if (checkFlick ()) {
 					_gameManager.flick ();
@@ -57,18 +110,27 @@ public class InputManager : MonoBehaviour {
 //					Debug.Log("d:"+getDirection ());
 				}
 //				Debug.Log("touchPosition:" + touchPosition + " lastTouchPosition:" + lastTouchPosition + " flickDistance:" + flickDistance);
-				touchingCounter = 0;
 			}
 			break;
 		}
 	}
 
-	bool checkFlick() {
-		flickDistance = Vector2.Distance (touchPosition, lastTouchPosition);
+	public bool isLastUpTap() {
+		float dist = Vector2.Distance(firstTouchPosition, touchPosition);
+		Debug.Log ("dist:" + dist);
+		if (dist < FLICK_DISTANCE) {
+			return true;
+		}
+//		if (touchingTime <= TAP_TIME) {
+//			
+//			return true;
+//		}
+		return false;
+	}
 
+	bool checkFlick() {
 		// flickCheck
-		if (touchingCounter <= FLICK_TIME &&
-			flickDistance >= FLICK_DISTANCE) {
+		if (flickDistance >= FLICK_DISTANCE) {
 			return true;
 		}
 		return false;

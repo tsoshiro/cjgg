@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 	public GameObject _imagePanel;
 	public QuestionCtrl _questionCtrl;
+	InputManager _inputManager;
 
 	// Settings
 	public Text _labelAnswer;
@@ -35,33 +36,43 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		time = TIME_DEFAULT;
-		state = GameState.STAND_BY;
+		_inputManager = this.gameObject.GetComponent<InputManager> ();
 
-		UpdateImage ();
+		setGameReady ();
 	}
 		
 	// Update is called once per frame
 	void Update () {
 		if (state == GameState.STAND_BY) {
 			UpdateStandBy ();
-		} else
-		if (state == GameState.PLAYING) {
+		} else if (state == GameState.PLAYING) {
 			UpdatePlaying ();
+		} else if (state == GameState.RESULT) {
+			UpdateResult ();
 		}
 	}
 
 	void UpdateStandBy() {
+		if (Input.GetMouseButtonDown (0)) {
+			startGame ();
+		}
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			startGame ();
 		}
 	}
 
-	void startGame() {
-		state = GameState.PLAYING;
+	void setGameReady() {
+		state = GameState.STAND_BY;
 		time = TIME_DEFAULT;
 		score = 0;
 
+		setLabelAnswer ("TAP TO START", false);
+		setLabelScore (score);
+		setLabelTime (time);
+	}
+
+	void startGame() {
+		state = GameState.PLAYING;
 		setLabelAnswer ("START!!");
 	}
 
@@ -77,18 +88,31 @@ public class GameManager : MonoBehaviour {
 		countTime ();
 	}
 
+	void UpdateResult() {
+		if (Input.GetMouseButtonDown (0)) {
+			setGameReady ();
+		}
+	}
+
 	#region TIME
 	void countTime() {
 		time -= Time.deltaTime;
 		if (time <= 0) {
-			time = 0;
-			state = GameState.STAND_BY;
-			_labelAnswer.text = "RESULT : " + score;
-			CancelInvoke ("disableLabelAnswer");
-
-			_labelAnswer.gameObject.SetActive (true);
+			timeUp ();
 		}
-		_labelTime.text = "TIME : " + time.ToString ("F2");
+		setLabelTime (time);
+	}
+
+	void timeUp() {
+		time = 0;
+		state = GameState.RESULT;
+
+		setLabelAnswer("RESULT : " + score, false);
+		CancelInvoke ("disableLabelAnswer");
+
+		_labelAnswer.gameObject.SetActive (true);
+
+		_inputManager.setDisabled (1f);
 	}
 	#endregion
 
@@ -105,6 +129,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void answer(int pAnswer) {
+		if (state != GameState.PLAYING) {
+			return;
+		}
 		string answer = "";
 		if (_questionCtrl.getAnswer () < 0) {
 			answer = "ERROR!!";
@@ -128,26 +155,42 @@ public class GameManager : MonoBehaviour {
 
 	void addScore(int pScore){
 		score += pScore;
-		_labelScore.text = "SCORE : "+score;
+		setLabelScore (score);
 	}
+
+	void setLabelScore(int pScore) {
+		_labelScore.text = "SCORE : "+pScore;
+	}
+
 	#endregion
 
 	#region UI
-	void setLabelAnswer(string pStr) {
+	void setLabelAnswer(string pStr, bool isFading = true) {
 		_labelAnswer.text = pStr;
 		_labelAnswer.gameObject.SetActive (true);
-		Invoke ("disableLabelAnswer", 0.4f);
+		if (isFading) {
+			Invoke ("disableLabelAnswer", 0.4f);
+		}
 	}
 
 	void disableLabelAnswer() {
 		_labelAnswer.gameObject.SetActive (false);
+	}
+
+	void setLabelTime(float pTime) {
+		_labelTime.text = "TIME: " + pTime.ToString ("F1");
 	}
 	#endregion
 
 	#region Action
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
-		this.gameObject.SendMessage ("action" + pGameObject.name);
+		if (_inputManager.disabled)
+			return;
+
+		if (_inputManager.isLastUpTap ()) {
+			this.gameObject.SendMessage ("action" + pGameObject.name);
+		}
 	}
 
 	public void flick() {
