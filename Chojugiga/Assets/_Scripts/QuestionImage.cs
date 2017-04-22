@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class QuestionImage {
 	// 画像クラス
-	public int id;
+	public int 		id;
 	public Const.AnimalType animalType;
-	public string imagePath;
+	public int 		number;
+	public string 	imagePath;
 }

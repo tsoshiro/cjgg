@@ -10,7 +10,8 @@ public class QuestionCtrl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		init ();	
+		init ();
+		initSprites ();
 	}
 	
 	// Update is called once per frame
@@ -18,7 +19,56 @@ public class QuestionCtrl : MonoBehaviour {
 		
 	}
 
+	#region Method_1
+
+	List<List<Sprite>> spritesList;
+	void initSprites() {
+		float time = Time.realtimeSinceStartup;
+
+		spritesList = new List<List<Sprite>> ();
+
+		for (int i = 0; i < images_max_count.Length; i++) {
+			List<Sprite> sprites = new List<Sprite> ();
+			for (int j = 1; j <= images_max_count [i]; j++) {
+				Sprite sp = getSprite ((Const.AnimalType)i, j);
+				sprites.Add (sp);
+			}
+			spritesList.Add (sprites);
+		}
+
+		time = Time.realtimeSinceStartup - time;
+		Debug.Log ("initSprites takes :" + time);
+	}
+
+	Sprite getSprite(Const.AnimalType pAt, int pNumber) {
+		string path = FOLDER_PATH [(int)pAt] + pNumber.ToString ();
+		Sprite sp = Resources.Load<Sprite>(path);
+		return sp;
+	}
+
+
+
+	#endregion
+
+	public Sprite getQSprite(Const.AnimalType pAt, int pId) {
+		Debug.Log (pAt + " " + pId);
+		Sprite sp = spritesList [(int)pAt] [pId - 1];
+		return sp;
+	}
+
 	public Sprite getQSprite() {
+		counter++;
+		if (counter % 5 == 0) {
+			addQuestions (5);
+		}
+
+		Question q = questionList [counter];
+		Sprite sp = getQSprite (q.questionImage.animalType, q.questionImage.number);
+		return sp;
+	}
+
+
+	public Sprite _getQSprite() {
 		counter++;
 		if (counter >= questionNum)
 			counter = 1;
@@ -41,24 +91,20 @@ public class QuestionCtrl : MonoBehaviour {
 			return 2;
 		}
 		if (at == Const.AnimalType.FROG) {
-//			if (q.position == Const.Position.LEFT) {
-//				return 0;
-//			}
-//			return 1;
 			return 0;
 		} else if (at == Const.AnimalType.RABBIT) {
-//			if (q.position == Const.Position.LEFT) {
-//				return 1;
-//			}
-//			return 0;
 			return 1;
 		}
 		return -1;
 	}
 		
 	void init() {
-		createQuestions ();
+		initQuestions ();
+	}
 
+	public void initQuestions() {
+		counter = 1;
+		createQuestions ();
 		readQuestions ();
 	}
 
@@ -70,6 +116,14 @@ public class QuestionCtrl : MonoBehaviour {
 
 		for (int i = 1; i <= questionNum; i++) {
 			Question q = createQuestion (i);
+			questionList.Add (q);
+		}
+	}
+
+	void addQuestions(int pAddNum) {
+		int startNumber = questionList.Count;
+		for (int i = 0; i < pAddNum; i++) {
+			Question q = createQuestion (startNumber - 1);
 			questionList.Add (q);
 		}
 	}
@@ -86,7 +140,12 @@ public class QuestionCtrl : MonoBehaviour {
 		QuestionImage qi = new QuestionImage ();
 		qi.id = pId;
 		qi.animalType = getAnimalType (qi.id);
+
+		// 01_frogs/f_[x] のxの部分を保存しておく
+		qi.number = images_counter_array [(int)qi.animalType];
+
 		qi.imagePath = getImagePath(qi.animalType);
+
 
 		Const.Position pos = getPosition ();
 		Const.Color col = getColor ();
@@ -135,8 +194,6 @@ public class QuestionCtrl : MonoBehaviour {
 		list_of_images_list.Add (frog_images_list);
 		list_of_images_list.Add (rabbit_images_list);
 		list_of_images_list.Add (others_images_list);
-
-
 	}
 
 	string getImagePath(Const.AnimalType pAt) {

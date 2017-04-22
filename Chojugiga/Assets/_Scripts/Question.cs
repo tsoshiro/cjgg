@@ -18,6 +18,6 @@ public class Question {
 
 	void setQuestionImage(QuestionImage pQuestionImage) {
 		questionImage = pQuestionImage;
-		sprite = Resources.Load<Sprite>(pQuestionImage.imagePath);
+//		sprite = Resources.Load<Sprite>(pQuestionImage.imagePath);
 	}
 }

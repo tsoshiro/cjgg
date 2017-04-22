@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour {
 			if (disabledTime <= 0) {
 				disabled = false;
 			}
+			return;
 		}
 		flick ();
 	}
@@ -117,7 +118,7 @@ public class InputManager : MonoBehaviour {
 
 	public bool isLastUpTap() {
 		float dist = Vector2.Distance(firstTouchPosition, touchPosition);
-		Debug.Log ("dist:" + dist);
+//		Debug.Log ("dist:" + dist);
 		if (dist < FLICK_DISTANCE) {
 			return true;
 		}

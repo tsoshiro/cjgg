@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour {
 
 	float X = 2f;
 
+	// COUNT DOWN
+	int START_COUNT_DOWN = 3;
+
 	enum GameState {
 		TITLE,
 		STAND_BY,
@@ -62,6 +65,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void setGameReady() {
+		_questionCtrl.initQuestions ();
+
 		state = GameState.STAND_BY;
 		time = TIME_DEFAULT;
 		score = 0;
@@ -71,9 +76,25 @@ public class GameManager : MonoBehaviour {
 		setLabelTime (time);
 	}
 
+	bool isCountingDown = false;
 	void startGame() {
+		if (isCountingDown)
+			return;
+		StartCoroutine (startCountDown ());
+	}
+
+	IEnumerator startCountDown() {
+		int cd = START_COUNT_DOWN;
+		isCountingDown = true;
+		for (int i = cd; i > 0; i--) {
+			setLabelAnswer(i.ToString("D1"), false);
+			yield return new WaitForSeconds (1f);
+		}
+
 		state = GameState.PLAYING;
 		setLabelAnswer ("START!!");
+		UpdateImage ();
+		isCountingDown = false;
 	}
 
 	void UpdatePlaying() {
@@ -90,7 +111,8 @@ public class GameManager : MonoBehaviour {
 
 	void UpdateResult() {
 		if (Input.GetMouseButtonDown (0)) {
-			setGameReady ();
+			if (!_inputManager.disabled)
+				setGameReady ();
 		}
 	}
 
@@ -112,8 +134,14 @@ public class GameManager : MonoBehaviour {
 
 		_labelAnswer.gameObject.SetActive (true);
 
-		_inputManager.setDisabled (1f);
+		_inputManager.setDisabled (2f);
+		Invoke ("guideToReplay", 2f);
 	}
+
+	void guideToReplay() {
+		setLabelAnswer ("RESULT : " + score + "\nREPLAY?", false);
+	}
+
 	#endregion
 
 	void answerLeft() {
