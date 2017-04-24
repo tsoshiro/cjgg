@@ -8,22 +8,23 @@ public class GameManager : MonoBehaviour {
 	public QuestionCtrl _questionCtrl;
 	InputManager _inputManager;
 
-	// Settings
+	// Label Settings
 	public Text _labelAnswer;
 	public Text _labelScore;
 	public Text _labelTime;
 
-	// SCORE
+	// スコア管理
 	int score = 0;
 	int ADD_SCORE = 20;
 
-	// TIME
+	// 時間管理
 	float time = 0f;
 	float TIME_DEFAULT = 30f;
 
+	// 画像表示位置
 	float X = 2f;
 
-	// COUNT DOWN
+	// ゲーム開始時のカウントダウン
 	int START_COUNT_DOWN = 3;
 
 	enum GameState {
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour {
 		HELP
 	}
 
-	GameState state;
+	GameState state;	// 現在のステート
 
 	// Use this for initialization
 	void Start () {
@@ -65,24 +66,35 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void setGameReady() {
+		// 質問リストの初期化
 		_questionCtrl.initQuestions ();
 
+		// GameManager内変数の初期化
 		state = GameState.STAND_BY;
 		time = TIME_DEFAULT;
 		score = 0;
 
+		// UI
 		setLabelAnswer ("TAP TO START", false);
 		setLabelScore (score);
 		setLabelTime (time);
 	}
 
-	bool isCountingDown = false;
+	bool isCountingDown = false; // ゲーム開始時カウントダウンがスタートしているかどうか
+
+	/// <summary>
+	/// ゲームスタート。ゲーム開始時カウントダウンコルーチンを開始。
+	/// </summary>
 	void startGame() {
 		if (isCountingDown)
 			return;
 		StartCoroutine (startCountDown ());
 	}
 
+	/// <summary>
+	/// カウントダウンを開始し、完了したらゲームをスタートする。
+	/// </summary>
+	/// <returns>The count down.</returns>
 	IEnumerator startCountDown() {
 		int cd = START_COUNT_DOWN;
 		isCountingDown = true;
@@ -109,6 +121,10 @@ public class GameManager : MonoBehaviour {
 		countTime ();
 	}
 
+	void UpdatePause() {
+		// Pause期間
+	}
+
 	void UpdateResult() {
 		if (Input.GetMouseButtonDown (0)) {
 			if (!_inputManager.disabled)
@@ -130,7 +146,7 @@ public class GameManager : MonoBehaviour {
 		state = GameState.RESULT;
 
 		setLabelAnswer("RESULT : " + score, false);
-		CancelInvoke ("disableLabelAnswer");
+		CancelInvoke ("disableLabelAnswer"); // Invokeのキャンセル
 
 		_labelAnswer.gameObject.SetActive (true);
 
@@ -144,6 +160,7 @@ public class GameManager : MonoBehaviour {
 
 	#endregion
 
+	#region ANSWER ACTION
 	void answerLeft() {
 		answer (0);
 	}
@@ -178,9 +195,9 @@ public class GameManager : MonoBehaviour {
 
 		UpdateImage ();
 	}
+	#endregion
 
 	#region SCORE
-
 	void addScore(int pScore){
 		score += pScore;
 		setLabelScore (score);
@@ -189,10 +206,14 @@ public class GameManager : MonoBehaviour {
 	void setLabelScore(int pScore) {
 		_labelScore.text = "SCORE : "+pScore;
 	}
-
 	#endregion
 
 	#region UI
+	/// <summary>
+	/// LabelAnswerの文字列変更。第二引数がtrueなら指定秒後に消える
+	/// </summary>
+	/// <param name="pStr">P string.</param>
+	/// <param name="isFading">If set to <c>true</c> is fading.</param>
 	void setLabelAnswer(string pStr, bool isFading = true) {
 		_labelAnswer.text = pStr;
 		_labelAnswer.gameObject.SetActive (true);
@@ -213,7 +234,7 @@ public class GameManager : MonoBehaviour {
 	#region Action
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
-		if (_inputManager.disabled)
+		if (_inputManager.disabled) // input無効になっているかどうかチェック
 			return;
 
 		if (_inputManager.isLastUpTap ()) {
@@ -222,7 +243,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void flick() {
-		answerDown ();
+		if (state == GameState.PLAYING) 
+			answerDown ();
 	}
 
 	// Private Methods
@@ -231,10 +253,40 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void actionButtonRight() {
-		answerRight ();
+		if (state == GameState.PLAYING) 
+			answerRight ();
+	}
+
+	void actionButtonPause() {
+		if (state == GameState.PLAYING) 
+			Pause ();
+	}
+
+	void actionButtonContinue() {
+		if (state == GameState.PAUSE) 
+			Continue ();
+	}
+
+	void actionButtonPlayFromStart() {
+		// PLAY FROM RESTART
+		if (state == GameState.PAUSE)
+			Continue ();
 	}
 
 	#endregion
+
+	public GameObject _pauseUI;
+
+
+	void Pause() {		
+		state = GameState.PAUSE;
+		_pauseUI.SetActive (true);
+	}
+
+	void Continue() {
+		state = GameState.PLAYING;
+		_pauseUI.SetActive (false);
+	}
 
 	void UpdateImage() {
 		_imagePanel.GetComponent<SpriteRenderer> ().sprite = _questionCtrl.getQSprite();
@@ -251,5 +303,15 @@ public class GameManager : MonoBehaviour {
 			pos.x = -X;
 		}
 		_imagePanel.transform.position = pos;
+	}
+
+	void OnApplicationPause (bool pauseStatus)
+	{
+		if (pauseStatus) {
+			Debug.Log("applicationWillResignActive or onPause");
+		} else {
+			if (state == GameState.PLAYING)
+				Pause ();
+		}
 	}
 }
