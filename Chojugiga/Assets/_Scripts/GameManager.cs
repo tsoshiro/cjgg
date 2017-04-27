@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 
 	// スコア管理
 	int score = 0;
-	int ADD_SCORE = 20;
+	int ADD_SCORE = 1;
 
 	// 時間管理
 	float time = 0f;
@@ -297,10 +297,10 @@ public class GameManager : MonoBehaviour {
 	void setPosition() {
 		Vector3 pos = new Vector3 ();
 
-		if ((int)_questionCtrl.getQPos () == 0) {
-			pos.x = X;
+		if ((int)_questionCtrl.getQPos () == (int)Const.Position.LEFT) {
+			pos.x = - X;
 		} else {
-			pos.x = -X;
+			pos.x = X;
 		}
 		_imagePanel.transform.position = pos;
 	}

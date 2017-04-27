@@ -83,17 +83,34 @@ public class QuestionCtrl : MonoBehaviour {
 		return questionList [counter].position;
 	}
 
+	// 蛙 : Position.Leftなら1、Rightなら0
+	// 兎 : Position.Leftなら0、Rightなら1
+	// 他 : 2
+
+	// Answer
+	// 0 : 左タップ
+	// 1 : 右タップ
+	// 2 : スワイプ
 	public int getAnswer () {
 		Question q = questionList [counter];
 		Const.AnimalType at = q.questionImage.animalType;
+		Debug.Log ("Position:" + q.position + " at:" + at);
 
 		if (at == Const.AnimalType.OTHERS) {
-			return 2;
+			return 0;
 		}
 		if (at == Const.AnimalType.FROG) {
-			return 0;
+			if (q.position == Const.Position.LEFT) {
+				return 1;
+			} else {
+				return 0;
+			}
 		} else if (at == Const.AnimalType.RABBIT) {
-			return 1;
+			if (q.position == Const.Position.LEFT) {
+				return 0;
+			} else {
+				return 1;
+			}
 		}
 		return -1;
 	}
