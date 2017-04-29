@@ -13,6 +13,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public Text _labelScore;
 	public Text _labelTime;
 
+	// Data管理
+	DataCtrl _dataCtrl;
+
 	// スコア管理
 	int score = 0;
 	int ADD_SCORE = 1;
@@ -37,6 +40,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	GameState state;	// 現在のステート
+
+	void Awake() {
+		InitData ();
+	}
+
+	void InitData() {
+		_dataCtrl = new DataCtrl ();
+		_dataCtrl.InitData ();
+		_dataCtrl.checkContent ();
+	}
 
 	// Use this for initialization
 	void Start () {
