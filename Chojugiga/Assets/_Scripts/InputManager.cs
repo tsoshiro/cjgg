@@ -107,10 +107,10 @@ public class InputManager : MonoBehaviour {
 
 				if (checkFlick ()) {
 					_gameManager.flick ();
-//					Debug.Log ("FLICK!");
-//					Debug.Log("d:"+getDirection ());
+//					DebugLogger.Log ("FLICK!");
+//					DebugLogger.Log("d:"+getDirection ());
 				}
-//				Debug.Log("touchPosition:" + touchPosition + " lastTouchPosition:" + lastTouchPosition + " flickDistance:" + flickDistance);
+//				DebugLogger.Log("touchPosition:" + touchPosition + " lastTouchPosition:" + lastTouchPosition + " flickDistance:" + flickDistance);
 			}
 			break;
 		}
@@ -118,7 +118,7 @@ public class InputManager : MonoBehaviour {
 
 	public bool isLastUpTap() {
 		float dist = Vector2.Distance(firstTouchPosition, touchPosition);
-//		Debug.Log ("dist:" + dist);
+//		DebugLogger.Log ("dist:" + dist);
 		if (dist < FLICK_DISTANCE) {
 			return true;
 		}

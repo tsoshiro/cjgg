@@ -37,7 +37,7 @@ public class QuestionCtrl : MonoBehaviour {
 		}
 
 		time = Time.realtimeSinceStartup - time;
-		Debug.Log ("initSprites takes :" + time);
+		DebugLogger.Log ("initSprites takes :" + time);
 	}
 
 	Sprite getSprite(Const.AnimalType pAt, int pNumber) {
@@ -51,7 +51,7 @@ public class QuestionCtrl : MonoBehaviour {
 	#endregion
 
 	public Sprite getQSprite(Const.AnimalType pAt, int pId) {
-		Debug.Log (pAt + " " + pId);
+		DebugLogger.Log (pAt + " " + pId);
 		Sprite sp = spritesList [(int)pAt] [pId - 1];
 		return sp;
 	}
@@ -73,7 +73,7 @@ public class QuestionCtrl : MonoBehaviour {
 		if (counter >= questionNum)
 			counter = 1;
 		
-		Debug.Log ("imagePath:" + questionList [counter].questionImage.imagePath);
+		DebugLogger.Log ("imagePath:" + questionList [counter].questionImage.imagePath);
 		Sprite sp = questionList[counter].sprite;
 
 		return sp;
@@ -94,7 +94,8 @@ public class QuestionCtrl : MonoBehaviour {
 	public int getAnswer () {
 		Question q = questionList [counter];
 		Const.AnimalType at = q.questionImage.animalType;
-		Debug.Log ("Position:" + q.position + " at:" + at);
+		DebugLogger.Log ("Position:" + q.position + " at:" + at);
+
 
 		if (at == Const.AnimalType.OTHERS) {
 			return 0;
@@ -148,7 +149,7 @@ public class QuestionCtrl : MonoBehaviour {
 	void readQuestions() {
 		for (int i = 0; i < questionList.Count; i++) {
 			Question q = questionList [i];
-			Debug.Log ("qestionList[" + i + "] id:" + q.questionImage.id + " type:" + q.questionImage.animalType +
+			DebugLogger.Log ("qestionList[" + i + "] id:" + q.questionImage.id + " type:" + q.questionImage.animalType +
 				" imagePath:" + q.questionImage.imagePath + " pos:" + q.position+ " sprite:"+q.sprite); 
 		}
 	}

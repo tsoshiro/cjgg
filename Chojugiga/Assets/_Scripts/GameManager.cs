@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public GameObject _imagePanel;
 	public QuestionCtrl _questionCtrl;
 	InputManager _inputManager;
@@ -180,17 +180,17 @@ public class GameManager : MonoBehaviour {
 		string answer = "";
 		if (_questionCtrl.getAnswer () < 0) {
 			answer = "ERROR!!";
-			Debug.Log (answer);
+			DebugLogger.Log (answer);
 			return;
 		}
-		Debug.Log ("getAnswer:" + _questionCtrl.getAnswer () + " myAnswer:" + pAnswer);
+		DebugLogger.Log ("getAnswer:" + _questionCtrl.getAnswer () + " myAnswer:" + pAnswer);
 		if (_questionCtrl.getAnswer () == pAnswer) {
 			answer = "CORRECT!";
 			addScore (ADD_SCORE);
 		} else {
 			answer = "WRONG!";
 		}
-		Debug.Log (answer);
+		DebugLogger.Log (answer);
 		setLabelAnswer (answer);
 
 		UpdateImage ();
@@ -308,7 +308,7 @@ public class GameManager : MonoBehaviour {
 	void OnApplicationPause (bool pauseStatus)
 	{
 		if (pauseStatus) {
-			Debug.Log("applicationWillResignActive or onPause");
+			DebugLogger.Log("applicationWillResignActive or onPause");	
 		} else {
 			if (state == GameState.PLAYING)
 				Pause ();

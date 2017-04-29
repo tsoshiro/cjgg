@@ -67,7 +67,7 @@ public static class ListExtension {
 	/// </summary>
 	public static T GetAndRemove<T>(this List<T> list, int targetNo){
 		if(list.Count <= targetNo || targetNo < 0){
-			Debug.LogError ("リストの範囲を超えています！(ListCount : " + list.Count + ", No : " + targetNo + ")");
+			DebugLogger.LogError ("リストの範囲を超えています！(ListCount : " + list.Count + ", No : " + targetNo + ")");
 		}
 
 		T target = list[targetNo];
@@ -106,7 +106,7 @@ public static class ListExtension {
 	/// </summary>
 	public static T GetAtRandom<T>(this List<T> list){
 		if(list.Count == 0){
-			Debug.LogError ("リストが空です！");
+			DebugLogger.LogError ("リストが空です！");
 		}
 
 		return list[Random.Range(0, list.Count)];
