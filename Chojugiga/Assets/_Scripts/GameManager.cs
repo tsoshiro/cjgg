@@ -18,7 +18,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	// Data管理
 	DataCtrl _dataCtrl;
-	UserData _userData;
+	public UserData _userData;
 
 	// スコア管理
 	int score = 0;

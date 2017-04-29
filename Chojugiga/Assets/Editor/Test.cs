@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 public class Test {
@@ -17,5 +18,50 @@ public class Test {
 		//Assert
 		//The object has a new name
 		Assert.AreEqual(newGameObjectName, gameObject.name);
+	}
+
+	[Test]
+	public void ReadCardsTest() {
+		var gameObject = new GameObject ();
+		gameObject.AddComponent<GachaCtrl>();
+		gachaCtrl = gameObject.GetComponent<GachaCtrl> ();
+
+		string sampleString = "1,3,4,5,8";
+		List<int> sampleList = gachaCtrl.getListFromString (sampleString);
+
+		logList (sampleList);
+
+		Assert.AreEqual(1, sampleList[0]);
+		Assert.AreEqual(4, sampleList[2]);
+		Assert.AreEqual(8, sampleList[4]);
+
+		string str = "";
+		str = gachaCtrl.getGachaResult (sampleList, 10);
+		Assert.AreEqual(str, "1,3,4,5,8,10");
+
+		str = gachaCtrl.getGachaResult (sampleList, 6);
+		Assert.AreEqual(str, "1,3,4,5,6,8,10");
+
+		logList (sampleList);
+
+		nullTest ();
+	}
+
+	GachaCtrl gachaCtrl;
+
+	void nullTest() {
+		string sampleString = "";
+		List<int> sampleList = gachaCtrl.getListFromString (sampleString);
+
+		Assert.IsEmpty (sampleList);
+
+		string str = gachaCtrl.getGachaResult (sampleList, 6);
+		Assert.AreEqual(str, "6");
+	}
+
+	void logList <T>(List<T> pList){
+		for (int i = 0; i < pList.Count; i++) {
+			DebugLogger.Log ("["+i+"]:"+pList[i]);
+		}
 	}
 }

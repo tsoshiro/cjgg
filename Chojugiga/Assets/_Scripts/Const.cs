@@ -19,6 +19,8 @@ public class Const {
 		GREEN
 	}
 
+	public static int GACHA_COST = 1000;
+
 	#region PLAYER_PREFS
 	public static string PREF_FIRST_LAUNCH_TIME	= "first_launch_time";
 	public static string PREF_LAST_LAUNCH_TIME		= "last_launch_time";
