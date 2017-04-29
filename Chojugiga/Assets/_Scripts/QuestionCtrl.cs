@@ -149,8 +149,9 @@ public class QuestionCtrl : MonoBehaviour {
 	void readQuestions() {
 		for (int i = 0; i < questionList.Count; i++) {
 			Question q = questionList [i];
-			DebugLogger.Log ("qestionList[" + i + "] id:" + q.questionImage.id + " type:" + q.questionImage.animalType +
-				" imagePath:" + q.questionImage.imagePath + " pos:" + q.position+ " sprite:"+q.sprite); 
+
+//			DebugLogger.Log ("qestionList[" + i + "] id:" + q.questionImage.id + " type:" + q.questionImage.animalType +
+//				" imagePath:" + q.questionImage.imagePath + " pos:" + q.position+ " sprite:"+q.sprite); 
 		}
 	}
 

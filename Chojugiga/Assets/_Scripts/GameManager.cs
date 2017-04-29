@@ -7,6 +7,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public GameObject _imagePanel;
 	public QuestionCtrl _questionCtrl;
 	InputManager _inputManager;
+	TimeManager _timeManager;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -22,7 +23,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	// 時間管理
 	float time = 0f;
-	float TIME_DEFAULT = 30f;
+	float TIME_DEFAULT = 5f;
+	float MAX_TIME = 10f;
+
+	float time_passed = 0f;
 
 	// 画像表示位置
 	float X = 2f;
@@ -54,6 +58,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	// Use this for initialization
 	void Start () {
 		_inputManager = this.gameObject.GetComponent<InputManager> ();
+		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
 		setGameReady ();
 	}
@@ -85,6 +90,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		// GameManager内変数の初期化
 		state = GameState.STAND_BY;
 		time = TIME_DEFAULT;
+		time_passed = 0;
 		score = 0;
 
 		// UI
@@ -113,7 +119,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		isCountingDown = true;
 		for (int i = cd; i > 0; i--) {
 			setLabelAnswer(i.ToString("D1"), false);
-			yield return new WaitForSeconds (1f);
+			yield return new WaitForSeconds (0.5f);
 		}
 
 		state = GameState.PLAYING;
@@ -139,7 +145,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	void UpdateResult() {
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (0) ||
+			Input.GetKeyDown(KeyCode.Space) ) {
 			if (!_inputManager.disabled)
 				setGameReady ();
 		}
@@ -148,6 +155,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	#region TIME
 	void countTime() {
 		time -= Time.deltaTime;
+		time_passed += Time.deltaTime;
+
 		if (time <= 0) {
 			timeUp ();
 		}
@@ -156,6 +165,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void timeUp() {
 		time = 0;
+
+		gameOver ();
+	}
+
+	void gameOver() {
 		state = GameState.RESULT;
 
 		setLabelAnswer("RESULT : " + score, false);
@@ -169,6 +183,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void guideToReplay() {
 		setLabelAnswer ("RESULT : " + score + "\nREPLAY?", false);
+	}
+
+	void addTime(float pTime) {
+		time += pTime;
+		setLabelTime (time);
 	}
 
 	#endregion
@@ -197,11 +216,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			return;
 		}
 		DebugLogger.Log ("getAnswer:" + _questionCtrl.getAnswer () + " myAnswer:" + pAnswer);
+
 		if (_questionCtrl.getAnswer () == pAnswer) {
 			answer = "CORRECT!";
 			addScore (ADD_SCORE);
+
+			addTime (_dataCtrl.getAddTime(score));
 		} else {
 			answer = "WRONG!";
+
+			gameOver ();
 		}
 		DebugLogger.Log (answer);
 		setLabelAnswer (answer);
@@ -241,6 +265,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void setLabelTime(float pTime) {
 		_labelTime.text = "TIME: " + pTime.ToString ("F1");
+		_timeManager.setTimeGaugeWidth (time, MAX_TIME);
 	}
 	#endregion
 

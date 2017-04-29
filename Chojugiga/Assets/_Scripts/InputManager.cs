@@ -107,10 +107,7 @@ public class InputManager : MonoBehaviour {
 
 				if (checkFlick ()) {
 					_gameManager.flick ();
-//					DebugLogger.Log ("FLICK!");
-//					DebugLogger.Log("d:"+getDirection ());
 				}
-//				DebugLogger.Log("touchPosition:" + touchPosition + " lastTouchPosition:" + lastTouchPosition + " flickDistance:" + flickDistance);
 			}
 			break;
 		}
