@@ -20,12 +20,15 @@ public class Test {
 		Assert.AreEqual(newGameObjectName, gameObject.name);
 	}
 
-	[Test]
-	public void ReadCardsTest() {
+	void init() {
 		var gameObject = new GameObject ();
 		gameObject.AddComponent<GachaCtrl>();
 		gachaCtrl = gameObject.GetComponent<GachaCtrl> ();
+	}
 
+	[Test]
+	public void ReadCardsTest() {
+		init ();
 		string sampleString = "1,3,4,5,8";
 		List<int> sampleList = gachaCtrl.getListFromString (sampleString);
 
@@ -63,5 +66,19 @@ public class Test {
 		for (int i = 0; i < pList.Count; i++) {
 			DebugLogger.Log ("["+i+"]:"+pList[i]);
 		}
+	}
+
+	[Test]
+	public void checkGachaAffordable() {
+		init ();
+
+		bool flg = gachaCtrl.checkGachaAffordable (999);
+		Assert.IsFalse (flg);
+
+		flg =  gachaCtrl.checkGachaAffordable (1000);
+		Assert.IsTrue (flg);
+	
+		flg =  gachaCtrl.checkGachaAffordable (1001);
+		Assert.IsTrue (flg);	
 	}
 }

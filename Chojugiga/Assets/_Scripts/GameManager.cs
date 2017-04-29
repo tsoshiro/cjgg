@@ -8,6 +8,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public QuestionCtrl _questionCtrl;
 	InputManager _inputManager;
 	TimeManager _timeManager;
+	GachaCtrl _gachaCtrl;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -43,10 +44,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		PLAYING,
 		PAUSE,
 		RESULT,
-		HELP
+		HELP,
+		GACHA
 	}
 
 	GameState state;	// 現在のステート
+
+	public GameObject _UI_group_title;
+	public GameObject _UI_group_game;
+	public GameObject _UI_group_gacha;
+	public GameObject _UI_group_playing; // Playing中だけ出すもの
+	public GameObject _pauseUI;
 
 	void Awake() {
 		InitData ();
@@ -69,7 +77,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_inputManager = this.gameObject.GetComponent<InputManager> ();
 		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
-		setGameReady ();
+		_gachaCtrl = _UI_group_gacha.GetComponent<GachaCtrl> ();
+
+		state = GameState.TITLE;
 	}
 		
 	// Update is called once per frame
@@ -80,6 +90,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			UpdatePlaying ();
 		} else if (state == GameState.RESULT) {
 			UpdateResult ();
+		} else if (state == GameState.GACHA) {
+			UpdateGacha ();
 		}
 	}
 
@@ -89,6 +101,19 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		}
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			startGame ();
+		}
+	}
+
+	void UpdateGacha() {
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			_gachaCtrl.playGacha ();
+		}
+		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			_UI_group_title.SetActive (true);
+			_UI_group_game.SetActive (true);
+
+			_UI_group_gacha.SetActive (false);
+			state = GameState.TITLE;
 		}
 	}
 
@@ -116,7 +141,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	/// ゲームスタート。ゲーム開始時カウントダウンコルーチンを開始。
 	/// </summary>
 	void startGame() {
-		if (isCountingDown)
+		if (state != GameState.STAND_BY||
+			isCountingDown)
 			return;
 		StartCoroutine (startCountDown ());
 	}
@@ -137,6 +163,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		setLabelAnswer ("START!!");
 		UpdateImage ();
 		isCountingDown = false;
+
+		_UI_group_playing.SetActive (true);
 	}
 
 	void UpdatePlaying() {
@@ -330,20 +358,44 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			this.gameObject.SendMessage ("action" + pGameObject.name);
 		}
 	}
-
+		
 	public void flick() {
 		if (state == GameState.PLAYING) 
 			answerDown ();
 	}
 
 	// Private Methods
+	void actionButtonPlay() {
+		if (state == GameState.TITLE) {
+			_UI_group_title.SetActive (false);
+			state = GameState.STAND_BY;
+			setGameReady ();
+		}
+	}
+
+	void actionButtonGacha() {
+		if (state == GameState.TITLE) {
+			_UI_group_title.SetActive (false);
+			_UI_group_game.SetActive (false);
+			_UI_group_gacha.SetActive (true);
+
+			state = GameState.GACHA;
+			_gachaCtrl.createCardList ();
+		}
+	}
+
+	void actionButtonPlayGacha() {
+		if (state == GameState.GACHA) {
+			_gachaCtrl.playGacha ();
+		}
+	}
+		
 	void actionButtonLeft() {
 		answerLeft ();
 	}
 
 	void actionButtonRight() {
-		if (state == GameState.PLAYING) 
-			answerRight ();
+		answerRight ();
 	}
 
 	void actionButtonPause() {
@@ -362,10 +414,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			Continue ();
 	}
 
+	void actionButtonHome() {
+		if (state != GameState.TITLE) {
+			state = GameState.TITLE;
+			_UI_group_title.SetActive (true);
+			_UI_group_playing.SetActive (false);
+		}
+	}
+
+
 	#endregion
-
-	public GameObject _pauseUI;
-
 
 	void Pause() {		
 		state = GameState.PAUSE;

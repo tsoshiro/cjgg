@@ -21,7 +21,7 @@ public class QuestionCtrl : MonoBehaviour {
 
 	#region Method_1
 
-	List<List<Sprite>> spritesList;
+	public List<List<Sprite>> spritesList;
 	void initSprites() {
 		float time = Time.realtimeSinceStartup;
 
