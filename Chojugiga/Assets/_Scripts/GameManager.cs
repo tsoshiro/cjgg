@@ -13,9 +13,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public Text _labelAnswer;
 	public Text _labelScore;
 	public Text _labelTime;
+	public Text _labelCoin;
+	public Text _labelBestScore;
 
 	// Data管理
 	DataCtrl _dataCtrl;
+	UserData _userData;
 
 	// スコア管理
 	int score = 0;
@@ -47,12 +50,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void Awake() {
 		InitData ();
+		InitUserData ();
 	}
 
 	void InitData() {
 		_dataCtrl = new DataCtrl ();
 		_dataCtrl.InitData ();
 		_dataCtrl.checkContent ();
+	}
+
+	void InitUserData() {
+		_userData = new UserData ();
+		_userData.initUserData ();
 	}
 
 	// Use this for initialization
@@ -97,6 +106,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		setLabelAnswer ("TAP TO START", false);
 		setLabelScore (score);
 		setLabelTime (time);
+		setLabelCoin (_userData.coin);
+		setLabelBestScore (_userData.best_score);
 	}
 
 	bool isCountingDown = false; // ゲーム開始時カウントダウンがスタートしているかどうか
@@ -177,10 +188,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		_labelAnswer.gameObject.SetActive (true);
 
+		updateUserData (score);
+	
 		_inputManager.setDisabled (2f);
 		Invoke ("guideToReplay", 2f);
 	}
-
+		
 	void guideToReplay() {
 		setLabelAnswer ("RESULT : " + score + "\nREPLAY?", false);
 	}
@@ -189,7 +202,36 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		time += pTime;
 		setLabelTime (time);
 	}
+	#endregion
 
+	#region USER DATA UPDATE
+	/// <summary>
+	/// Updates the user data.
+	/// </summary>
+	/// <param name="pScore">P score.</param>
+	void updateUserData(int pScore) {
+		addCoin (pScore);
+		setHighScore (pScore);
+		playCountUp ();
+
+		_userData.save ();
+	}
+
+	void addCoin(int pCoin) {
+		_userData.coin += pCoin;
+		setLabelCoin (_userData.coin);
+	}
+
+	void setHighScore(int pScore) {
+		if (_userData.checkIfIsNewRecord (Const.PREF_BEST_SCORE, pScore)) {
+			_userData.best_score = pScore;
+			setLabelBestScore (pScore);
+		};
+	}
+
+	void playCountUp() {
+		_userData.play_count++;
+	}
 	#endregion
 
 	#region ANSWER ACTION
@@ -243,6 +285,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void setLabelScore(int pScore) {
 		_labelScore.text = "SCORE : "+pScore;
 	}
+
 	#endregion
 
 	#region UI
@@ -266,6 +309,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void setLabelTime(float pTime) {
 		_labelTime.text = "TIME: " + pTime.ToString ("F1");
 		_timeManager.setTimeGaugeWidth (time, MAX_TIME);
+	}
+
+	void setLabelCoin(int pCoin) {
+		_labelCoin.text = "COIN: " + pCoin;
+	}
+
+	void setLabelBestScore(int pScore) {
+		_labelBestScore.text = "BEST: " + pScore;
 	}
 	#endregion
 
@@ -351,5 +402,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			if (state == GameState.PLAYING)
 				Pause ();
 		}
+	}
+
+	public void resetPlayerPrefs() {
+		_userData.reset ();
 	}
 }
