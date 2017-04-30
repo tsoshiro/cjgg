@@ -109,12 +109,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			_gachaCtrl.playGacha ();
 		}
 		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
-			_UI_group_title.SetActive (true);
-			_UI_group_game.SetActive (true);
-
-			_UI_group_gacha.SetActive (false);
-			state = GameState.TITLE;
+			backToTitle ();
 		}
+	}
+
+	void backToTitle() {
+		_UI_group_title.SetActive (true);
+		_UI_group_game.SetActive (false);
+		_UI_group_gacha.SetActive (false);
+
+		state = GameState.TITLE;
 	}
 
 	void setGameReady() {
@@ -368,6 +372,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void actionButtonPlay() {
 		if (state == GameState.TITLE) {
 			_UI_group_title.SetActive (false);
+
+			_UI_group_game.SetActive (true);
 			state = GameState.STAND_BY;
 			setGameReady ();
 		}
@@ -418,7 +424,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		if (state != GameState.TITLE) {
 			state = GameState.TITLE;
 			_UI_group_title.SetActive (true);
-			_UI_group_playing.SetActive (false);
+
+			_UI_group_game.SetActive (false);
+			_UI_group_gacha.SetActive (false);
 		}
 	}
 

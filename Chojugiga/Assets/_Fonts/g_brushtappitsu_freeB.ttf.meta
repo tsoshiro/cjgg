@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 943b85baae95c42babbfdb547db1e75e
+timeCreated: 1493565854
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: g_brushtappitsu_free_bold
+  fontNames:
+  - g_brushtappitsu_free_bold
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
