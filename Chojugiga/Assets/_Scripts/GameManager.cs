@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public GameObject _imagePanel;
 	public QuestionCtrl _questionCtrl;
-	InputManager _inputManager;
+	public InputManager _inputManager;
 	TimeManager _timeManager;
 	GachaCtrl _gachaCtrl;
+	ScreenCtrl _screenCtrl;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -78,6 +79,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
 		_gachaCtrl = _UI_group_gacha.GetComponent<GachaCtrl> ();
+
+		// UI Ctrl初期化
+		_screenCtrl = GameObject.Find ("UI").GetComponent<ScreenCtrl> ();
+		_screenCtrl.Init (_UI_group_title.transform.position);
 
 		state = GameState.TITLE;
 	}
@@ -352,6 +357,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 	#endregion
 
+	#region Transition
+	void SwitchScreen(GameState pFrom, GameState pTo) {
+		
+	}
+
+	#endregion
+
 	#region Action
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
@@ -371,9 +383,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	// Private Methods
 	void actionButtonPlay() {
 		if (state == GameState.TITLE) {
-			_UI_group_title.SetActive (false);
 
-			_UI_group_game.SetActive (true);
+			_screenCtrl.Transition (_UI_group_title, _UI_group_game);
+//			_UI_group_title.SetActive (false);
+//			_UI_group_game.SetActive (true);
+
 			state = GameState.STAND_BY;
 			setGameReady ();
 		}
@@ -381,12 +395,20 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void actionButtonGacha() {
 		if (state == GameState.TITLE) {
-			_UI_group_title.SetActive (false);
-			_UI_group_game.SetActive (false);
-			_UI_group_gacha.SetActive (true);
+			_screenCtrl.Transition (_UI_group_title, _UI_group_gacha);
+//
+//			_UI_group_title.SetActive (false);
+//			_UI_group_game.SetActive (false);
+//			_UI_group_gacha.SetActive (true);
 
 			state = GameState.GACHA;
 			_gachaCtrl.createCardList ();
+		}
+	}
+
+	void actionButtonSettings() {
+		if (state == GameState.TITLE) {
+			_screenCtrl.OpenPopUp ("SETTINGS", "WE ARE GOING TO SET SOME CONFIGURATION!!");
 		}
 	}
 
@@ -423,10 +445,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void actionButtonHome() {
 		if (state != GameState.TITLE) {
 			state = GameState.TITLE;
-			_UI_group_title.SetActive (true);
 
-			_UI_group_game.SetActive (false);
-			_UI_group_gacha.SetActive (false);
+			_screenCtrl.TransitionBackwards (_UI_group_gacha, _UI_group_title);
+
+//			_UI_group_title.SetActive (true);
+//
+//			_UI_group_game.SetActive (false);
+//			_UI_group_gacha.SetActive (false);
 		}
 	}
 
