@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class DataCtrl {
 	List<TimeMaster> _timeMasterList;
+	List<CommentMaster> _commentMasterList;
 
 	public void InitData() {
-		InitTimeMasteData ();
+		_timeMasterList = InitMasterData<TimeMaster, TimeMasterTable> (_timeMasterList);
+		_commentMasterList = InitMasterData<CommentMaster, CommentMasterTable> (_commentMasterList);
 	}
 
+	#region TIME
 	public void InitTimeMasteData() {
 		_timeMasterList = new List<TimeMaster>();
 
@@ -46,5 +49,28 @@ public class DataCtrl {
 			TimeMaster tm = _timeMasterList [i];
 			DebugLogger.Log ("[" + i + "] SCORE : "+ tm.SCORE_IS_LOWER_THAN + " ADD_TIME : " + tm.ADD_TIME);
 		}
+
+		for (int i = 0; i < _commentMasterList.Count; i++) {
+			CommentMaster m = _commentMasterList [i];
+			DebugLogger.Log ("[" + i + "] ID : "+ m.ID + " SCORE_IS_OVER : " + m.SCORE_IS_OVER + " COMMENT:" +m.COMMENT);
+		}
 	}
+	#endregion
+
+	#region COMMON
+	public List<T> InitMasterData <T, U> (List<T> pMasterList)
+		where T : MasterBase,  new() // MasterBase
+		where U : MasterTableBase<T>, new() // MasterTableBase<CommentMaster>
+	{
+		pMasterList = new List<T> ();
+
+		var entityMasterTable = new U();
+		entityMasterTable.Load ();
+		foreach (var entitymaster in entityMasterTable.All) {
+			pMasterList.Add (entitymaster);
+		}
+
+		return pMasterList;
+	}
+	#endregion
 }

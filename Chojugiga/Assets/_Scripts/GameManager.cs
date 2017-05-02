@@ -51,6 +51,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	GameState state;	// 現在のステート
 
+	GameObject _UI_now; // 現在のUI
+
 	public GameObject _UI_group_title;
 	public GameObject _UI_group_game;
 	public GameObject _UI_group_gacha;
@@ -85,6 +87,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_screenCtrl.Init (_UI_group_title.transform.position);
 
 		state = GameState.TITLE;
+		_UI_now = _UI_group_title;
 	}
 		
 	// Update is called once per frame
@@ -119,9 +122,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	void backToTitle() {
-		_UI_group_title.SetActive (true);
-		_UI_group_game.SetActive (false);
-		_UI_group_gacha.SetActive (false);
+		_screenCtrl.TransitionBackwards (_UI_group_game, _UI_group_title);
+//		_UI_group_title.SetActive (true);
+//		_UI_group_game.SetActive (false);
+//		_UI_group_gacha.SetActive (false);
 
 		state = GameState.TITLE;
 	}
@@ -384,7 +388,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void actionButtonPlay() {
 		if (state == GameState.TITLE) {
 
-			_screenCtrl.Transition (_UI_group_title, _UI_group_game);
+			_screenCtrl.Transition (_UI_now, _UI_group_game);
+			_UI_now = _UI_group_game;
+
 //			_UI_group_title.SetActive (false);
 //			_UI_group_game.SetActive (true);
 
@@ -395,8 +401,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void actionButtonGacha() {
 		if (state == GameState.TITLE) {
-			_screenCtrl.Transition (_UI_group_title, _UI_group_gacha);
-//
+			_screenCtrl.Transition (_UI_now, _UI_group_gacha);
+			_UI_now = _UI_group_gacha;
+
 //			_UI_group_title.SetActive (false);
 //			_UI_group_game.SetActive (false);
 //			_UI_group_gacha.SetActive (true);
@@ -444,15 +451,21 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void actionButtonHome() {
 		if (state != GameState.TITLE) {
+			if (state == GameState.PAUSE) {
+				stopGame ();
+				_pauseUI.SetActive (false);
+			}				
+			
 			state = GameState.TITLE;
 
-			_screenCtrl.TransitionBackwards (_UI_group_gacha, _UI_group_title);
-
-//			_UI_group_title.SetActive (true);
-//
-//			_UI_group_game.SetActive (false);
-//			_UI_group_gacha.SetActive (false);
+			_screenCtrl.TransitionBackwards (_UI_now, _UI_group_title);
+			_UI_now = _UI_group_title;
 		}
+	}
+
+	void stopGame() {
+		setGameReady ();
+		_imagePanel.GetComponent<SpriteRenderer> ().sprite = null;
 	}
 
 

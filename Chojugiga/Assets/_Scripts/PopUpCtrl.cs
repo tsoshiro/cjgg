@@ -13,8 +13,9 @@ public class PopUpCtrl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		// defaultScaleに初期値を入れ、Scaleをゼロにしてインアクティブにしておく
 		defaultScale = this.transform.localScale;
-
+		this.transform.localScale = Vector3.zero;
 		this.gameObject.SetActive (false);
 	}
 
@@ -55,7 +56,7 @@ public class PopUpCtrl : MonoBehaviour {
 
 	void CloseAnimation() {
 		iTween.ScaleTo( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "scale", Vector3.zero));
-		Invoke ("CloseAnimationOnComplete", 0.2f);
+		Invoke ("CloseAnimationOnComplete", ANIMATION_TIME * 3);
 	}
 
 	void CloseAnimationOnComplete() {

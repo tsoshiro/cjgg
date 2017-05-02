@@ -9,6 +9,10 @@ public class MasterTableBase<T> where T : MasterBase, new() {
 	protected List<T> masters;
 	public List<T> All { get { return masters; } }
 
+	virtual public void Load() {
+		Load(convertClassToFilePath (this.GetType ().Name));
+	}
+
 	public void Load(string filePath) 
 	{
 		var text = ((TextAsset)Resources.Load ("csv/"+filePath, typeof(TextAsset))).text;
@@ -90,4 +94,6 @@ public class MasterBase
 		else if (propertyInfo.PropertyType == typeof(double))
 			propertyInfo.SetValue (this, double.Parse (value), null);
 	}
+
+	public MasterBase () {}
 }
