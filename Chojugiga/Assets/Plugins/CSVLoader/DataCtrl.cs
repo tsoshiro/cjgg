@@ -11,17 +11,36 @@ public class DataCtrl {
 		_commentMasterList = InitMasterData<CommentMaster, CommentMasterTable> (_commentMasterList);
 	}
 
-	#region TIME
-	public void InitTimeMasteData() {
-		_timeMasterList = new List<TimeMaster>();
+	#region COMMON
+	public List<T> InitMasterData <T, U> (List<T> pMasterList)
+		where T : MasterBase,  new() // MasterBase
+		where U : MasterTableBase<T>, new() // MasterTableBase<CommentMaster>
+	{
+		pMasterList = new List<T> ();
 
-		var entityMasterTable = new TimeMasterTable ();
+		var entityMasterTable = new U();
 		entityMasterTable.Load ();
 		foreach (var entitymaster in entityMasterTable.All) {
-			_timeMasterList.Add (entitymaster);
+			pMasterList.Add (entitymaster);
+		}
+
+		return pMasterList;
+	}
+
+	public void checkContent() {
+		for (int i = 0; i < _timeMasterList.Count; i++) {
+			TimeMaster tm = _timeMasterList [i];
+			DebugLogger.Log ("[" + i + "] SCORE : "+ tm.SCORE_IS_LOWER_THAN + " ADD_TIME : " + tm.ADD_TIME);
+		}
+
+		for (int i = 0; i < _commentMasterList.Count; i++) {
+			CommentMaster m = _commentMasterList [i];
+			DebugLogger.Log ("[" + i + "] ID : "+ m.ID + " SCORE_IS_OVER : " + m.SCORE_IS_OVER + " COMMENT:" +m.COMMENT);
 		}
 	}
-		
+	#endregion
+
+	#region TIME
 	public float getAddTime(int pScore) {
 		int n = 0;
 		for (int i = _timeMasterList.Count - 1; i >= 0; i--) {
@@ -43,34 +62,30 @@ public class DataCtrl {
 		}
 		return _timeMasterList[n].SCORE_IS_LOWER_THAN;
 	}
-
-	public void checkContent() {
-		for (int i = 0; i < _timeMasterList.Count; i++) {
-			TimeMaster tm = _timeMasterList [i];
-			DebugLogger.Log ("[" + i + "] SCORE : "+ tm.SCORE_IS_LOWER_THAN + " ADD_TIME : " + tm.ADD_TIME);
-		}
-
-		for (int i = 0; i < _commentMasterList.Count; i++) {
-			CommentMaster m = _commentMasterList [i];
-			DebugLogger.Log ("[" + i + "] ID : "+ m.ID + " SCORE_IS_OVER : " + m.SCORE_IS_OVER + " COMMENT:" +m.COMMENT);
-		}
-	}
 	#endregion
 
-	#region COMMON
-	public List<T> InitMasterData <T, U> (List<T> pMasterList)
-		where T : MasterBase,  new() // MasterBase
-		where U : MasterTableBase<T>, new() // MasterTableBase<CommentMaster>
-	{
-		pMasterList = new List<T> ();
+	#region Comment
+	public string getComment(int pId) {
+		string str = _commentMasterList [pId - 1].COMMENT;
+		return str;
+	}
 
-		var entityMasterTable = new U();
-		entityMasterTable.Load ();
-		foreach (var entitymaster in entityMasterTable.All) {
-			pMasterList.Add (entitymaster);
+	public int getCommentId(int pScore) {
+		List<int> availableIdList = new List<int> ();
+
+		// 利用可能なIDリストを取得
+		for (int i = _commentMasterList.Count-1; i >= 0; i--) {
+			if (pScore >= _commentMasterList [i].SCORE_IS_OVER) {
+				availableIdList.Add (_commentMasterList[i].ID);
+			}
 		}
 
-		return pMasterList;
+		if (_commentMasterList.Count <= 0) { // リストに何も入っていない=バグ
+			return -1;
+		}
+
+		int randomId = Random.Range (0, availableIdList.Count);
+		return availableIdList[randomId];
 	}
 	#endregion
 }

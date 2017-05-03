@@ -81,4 +81,22 @@ public class Test {
 		flg =  gachaCtrl.checkGachaAffordable (1001);
 		Assert.IsTrue (flg);	
 	}
+
+	[Test]
+	public void getCommentTest() {
+		// DataCtrl初期化
+		DataCtrl _dataCtrl = new DataCtrl ();
+		_dataCtrl.InitData ();
+		_dataCtrl.checkContent ();
+
+		int id = _dataCtrl.getCommentId (0);
+		Assert.AreEqual (1, id);
+
+		id = _dataCtrl.getCommentId (6);
+		Assert.AreEqual (2, id);
+
+		id = _dataCtrl.getCommentId (89);
+		DebugLogger.Log ("id:" + id);
+
+	}
 }
