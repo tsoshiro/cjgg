@@ -10,6 +10,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	TimeManager _timeManager;
 	GachaCtrl _gachaCtrl;
 	ScreenCtrl _screenCtrl;
+	CommentCtrl _commentCtrl;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -58,6 +59,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public GameObject _UI_group_gacha;
 	public GameObject _UI_group_playing; // Playing中だけ出すもの
 	public GameObject _pauseUI;
+	public GameObject _resultUI;
 
 	void Awake() {
 		InitData ();
@@ -81,6 +83,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
 		_gachaCtrl = _UI_group_gacha.GetComponent<GachaCtrl> ();
+		_commentCtrl = _resultUI.GetComponent<CommentCtrl> ();
 
 		// UI Ctrl初期化
 		_screenCtrl = GameObject.Find ("UI").GetComponent<ScreenCtrl> ();
@@ -177,6 +180,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		UpdateImage ();
 		isCountingDown = false;
 
+		_imagePanel.SetActive (true);
 		_UI_group_playing.SetActive (true);
 	}
 
@@ -199,8 +203,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void UpdateResult() {
 		if (Input.GetMouseButtonDown (0) ||
 			Input.GetKeyDown(KeyCode.Space) ) {
-			if (!_inputManager.disabled)
+			if (!_inputManager.disabled) {
+				_resultUI.SetActive (false);
 				setGameReady ();
+			}
 		}
 	}
 
@@ -223,20 +229,39 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void gameOver() {
 		state = GameState.RESULT;
+	
+		_imagePanel.SetActive (false);
 
-		setLabelAnswer("RESULT : " + score, false);
-		CancelInvoke ("disableLabelAnswer"); // Invokeのキャンセル
-
-		_labelAnswer.gameObject.SetActive (true);
+//		setLabelAnswer("RESULT : " + score, false);
+//		CancelInvoke ("disableLabelAnswer"); // Invokeのキャンセル
+		showResult (score);
 
 		updateUserData (score);
 	
 		_inputManager.setDisabled (2f);
 		Invoke ("guideToReplay", 2f);
 	}
+
+	/// <summary>
+	/// 結果表示・コメント表示
+	/// </summary>
+	/// <param name="pScore">P score.</param>
+	void showResult(int pScore) {
+		// 結果表示
+		_commentCtrl.setResult ("RESULT:"+pScore);
+
+		// コメント出力
+		int id = _dataCtrl.getCommentId(pScore);
+		string comment = _dataCtrl.getComment(id);
+		_commentCtrl.setComment (comment);
+
+		// 画像差し替え(余裕があれば)
+
+		_resultUI.SetActive (true);
+	}
 		
 	void guideToReplay() {
-		setLabelAnswer ("RESULT : " + score + "\nREPLAY?", false);
+		_commentCtrl.setResult (_commentCtrl._result.text + "\nREPLAY?");
 	}
 
 	void addTime(float pTime) {
