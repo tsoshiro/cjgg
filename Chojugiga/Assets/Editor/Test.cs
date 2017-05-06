@@ -4,29 +4,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 public class Test {
-
-	[Test]
-	public void EditorTest() {
-		//Arrange
-		var gameObject = new GameObject();
-
-		//Act
-		//Try to rename the GameObject
-		var newGameObjectName = "My game object";
-		gameObject.name = newGameObjectName;
-
-		//Assert
-		//The object has a new name
-		Assert.AreEqual(newGameObjectName, gameObject.name);
-	}
-
 	void init() {
 		var gameObject = new GameObject ();
 		gameObject.AddComponent<GachaCtrl>();
 		gachaCtrl = gameObject.GetComponent<GachaCtrl> ();
 	}
-
-	[Test]
+		
 	public void ReadCardsTest() {
 		init ();
 		string sampleString = "1,3,4,5,8";
@@ -95,15 +78,20 @@ public class Test {
 		id = _dataCtrl.getCommentId (6);
 		Assert.AreEqual (3, id);
 
-		id = _dataCtrl.getCommentId (89);
-//		Assert.Contains (17, id);
-		DebugLogger.Log ("id:" + id);
+		List<int> list = _dataCtrl.getCommentIdList (89);
+		Assert.Contains (17, list);
+
+		list = _dataCtrl.getCommentIdList (91);
+		Assert.Contains (19, list);
+
+		list = _dataCtrl.getCommentIdList (100);
+		Assert.Contains (20, list);
 	}
 
 
 	DataCtrl _dataCtrl;
 	[Test]
-	public void halfTest() {
+	public void binarySearchTest() {
 		_dataCtrl = new DataCtrl ();
 		_dataCtrl.InitData ();
 		_dataCtrl.checkContent ();
@@ -115,13 +103,13 @@ public class Test {
 		}
 
 		DebugLogger.Log ("linear START");
-		timeList (cmList, false);
+		testCommentList (cmList, false);
 
 		DebugLogger.Log ("half START");
-		timeList (cmList, true);
+		testCommentList (cmList, true);
 	}
 
-	void timeList(List<int> cmList, bool flg) {
+	void testCommentList(List<int> cmList, bool flg) {
 		float time = Time.realtimeSinceStartup;
 		int result = getTargetMethod (50, cmList, flg);
 		Assert.AreEqual (50, result);

@@ -65,25 +65,51 @@ public class DataCtrl {
 	#endregion
 
 	#region Comment
+	/// <summary>
+	/// コメントIDからコメントを取得
+	/// </summary>
+	/// <returns>The comment.</returns>
+	/// <param name="pId">P identifier.</param>
 	public string getComment(int pId) {
 		string str = _commentMasterList [pId - 1].COMMENT;
 		return str;
 	}
-		
+
+	/// <summary>
+	/// スコアからコメントIDを取得
+	/// </summary>
+	/// <returns>The comment identifier.</returns>
+	/// <param name="pScore">P score.</param>
 	public int getCommentId(int pScore) {
-		int targetScore = getTargetScore (pScore, _commentMasterList);
+		List<int> availableIdList = getCommentIdList (pScore);
 
-		List<int> availableIdList = getAvailableIdList (targetScore, _commentMasterList);
-
-		if (_commentMasterList.Count <= 0) { // リストに何も入っていない=バグ
+		if (availableIdList.Count <= 0) { // リストに何も入っていない=バグ
 			return -1;
 		}
 
+		// 利用可能IDからランダムに返す
 		int randomId = Random.Range (0, availableIdList.Count);
 
 		return availableIdList[randomId];
 	}
+
+	/// <summary>
+	/// 獲得スコアから利用可能なコメントID一覧を取得
+	/// </summary>
+	/// <returns>The comment master list.</returns>
+	public List<int> getCommentIdList(int pScore) {
+		int targetScore = getTargetScore (pScore, _commentMasterList);
+
+		List<int> availableIdList = getAvailableIdList (targetScore, _commentMasterList);
+		return availableIdList;
+	}
 		
+	/// <summary>
+	/// 獲得スコアで、SCORE_IS_OVERの値を取得
+	/// </summary>
+	/// <returns>The target score.</returns>
+	/// <param name="pScore">P score.</param>
+	/// <param name="pList">P list.</param>
 	public int getTargetScore(int pScore, List<CommentMaster> pList) {
 		for (int i = pList.Count-1; i >= 0; i--) {
 			// SCOREがSCORE_IS_OVERより上なら、その時のスコアをターゲットスコアとして設定する
@@ -94,16 +120,22 @@ public class DataCtrl {
 		return 0;
 	}
 
-	public List<int> getAvailableIdList(int pScore, List<CommentMaster> pList) {
+	/// <summary>
+	/// 獲得したスコアで、表示される候補リストを取得
+	/// </summary>
+	/// <returns>The available identifier list.</returns>
+	/// <param name="pScore">P score.</param>
+	/// <param name="pList">P list.</param>
+	public List<int> getAvailableIdList(int pTargetScore, List<CommentMaster> pList) {
 		List<int> list = new List<int> ();
 
-		int targetScoreIndex = getTargetScoreIndex (pScore, pList);
+		int targetScoreIndex = getTargetScoreIndex (pTargetScore, pList);
 		list.Add(pList[targetScoreIndex].ID);
 
 		// 重複分もリストに追加
 		// + 方向に
 		for (int i = targetScoreIndex + 1; i < pList.Count; i++) {
-			if (pList [i].SCORE_IS_OVER == pScore) {
+			if (pList [i].SCORE_IS_OVER == pTargetScore) {
 				list.Add (pList [i].ID);
 			}
 			break;
@@ -111,7 +143,7 @@ public class DataCtrl {
 
 		// - 方向に
 		for (int i = targetScoreIndex - 1; i >= 0; i--) {
-			if (pList [i].SCORE_IS_OVER == pScore) {
+			if (pList [i].SCORE_IS_OVER == pTargetScore) {
 				list.Add (pList [i].ID);
 			}
 			break;
@@ -120,6 +152,12 @@ public class DataCtrl {
 		return list;
 	}
 		
+	/// <summary>
+	/// 獲得したスコアが対応するSCORE_IS_OVERが、Listの何要素目にあるかを取得
+	/// </summary>
+	/// <returns>The target score index.</returns>
+	/// <param name="pScore">P score.</param>
+	/// <param name="pList">P list.</param>
 	public int getTargetScoreIndex(int pScore, List<CommentMaster> pList) {
 		int left = 0;
 		int right = pList.Count - 1;
@@ -138,15 +176,21 @@ public class DataCtrl {
 		return -1;
 	}
 
-	public int getTargetBinary(int pScore, List<int> pList) {
+	/// <summary>
+	/// 二分探索でターゲットスコアが存在するインデックスを取得
+	/// </summary>
+	/// <returns>The target binary.</returns>
+	/// <param name="pScore">P score.</param>
+	/// <param name="pList">P list.</param>
+	public int getTargetBinary(int pTargetScore, List<int> pList) {
 		int left = 0;
 		int right = pList.Count - 1;
 
 		while (left <= right) {
 			int mid = (left + right) / 2;
-			if (pList[mid] == pScore) {
+			if (pList[mid] == pTargetScore) {
 				return mid;
-			} else if (pList[mid] < pScore) {
+			} else if (pList[mid] < pTargetScore) {
 				left = mid + 1;
 			} else {
 				right = mid;
@@ -155,6 +199,12 @@ public class DataCtrl {
 		return -1;
 	}
 
+	/// <summary>
+	/// 線形探索
+	/// </summary>
+	/// <returns>The target linear.</returns>
+	/// <param name="pScore">P score.</param>
+	/// <param name="pList">P list.</param>
 	public int getTargetLinear(int pScore,List<int> pList) {
 		int result = 0;
 		for (int i = 0; i < pList.Count; i++) {

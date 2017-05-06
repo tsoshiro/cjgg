@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TimeMasterTable : MasterTableBase<TimeMaster> {
-	public void Load() {
+	override public void Load() {
 		Load(convertClassToFilePath (this.GetType ().Name));
 	}
 }
