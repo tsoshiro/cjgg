@@ -69,23 +69,101 @@ public class DataCtrl {
 		string str = _commentMasterList [pId - 1].COMMENT;
 		return str;
 	}
-
+		
 	public int getCommentId(int pScore) {
-		List<int> availableIdList = new List<int> ();
+		int targetScore = getTargetScore (pScore, _commentMasterList);
 
-		// 利用可能なIDリストを取得
-		for (int i = _commentMasterList.Count-1; i >= 0; i--) {
-			if (pScore >= _commentMasterList [i].SCORE_IS_OVER) {
-				availableIdList.Add (_commentMasterList[i].ID);
-			}
-		}
+		List<int> availableIdList = getAvailableIdList (targetScore, _commentMasterList);
 
 		if (_commentMasterList.Count <= 0) { // リストに何も入っていない=バグ
 			return -1;
 		}
 
 		int randomId = Random.Range (0, availableIdList.Count);
+
 		return availableIdList[randomId];
+	}
+		
+	public int getTargetScore(int pScore, List<CommentMaster> pList) {
+		for (int i = pList.Count-1; i >= 0; i--) {
+			// SCOREがSCORE_IS_OVERより上なら、その時のスコアをターゲットスコアとして設定する
+			if (pScore >= pList [i].SCORE_IS_OVER) {
+				return pList [i].SCORE_IS_OVER;
+			}
+		}	
+		return 0;
+	}
+
+	public List<int> getAvailableIdList(int pScore, List<CommentMaster> pList) {
+		List<int> list = new List<int> ();
+
+		int targetScoreIndex = getTargetScoreIndex (pScore, pList);
+		list.Add(pList[targetScoreIndex].ID);
+
+		// 重複分もリストに追加
+		// + 方向に
+		for (int i = targetScoreIndex + 1; i < pList.Count; i++) {
+			if (pList [i].SCORE_IS_OVER == pScore) {
+				list.Add (pList [i].ID);
+			}
+			break;
+		}
+
+		// - 方向に
+		for (int i = targetScoreIndex - 1; i >= 0; i--) {
+			if (pList [i].SCORE_IS_OVER == pScore) {
+				list.Add (pList [i].ID);
+			}
+			break;
+		}
+
+		return list;
+	}
+		
+	public int getTargetScoreIndex(int pScore, List<CommentMaster> pList) {
+		int left = 0;
+		int right = pList.Count - 1;
+
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			CommentMaster cm = pList [mid];
+			if (cm.SCORE_IS_OVER == pScore) {
+				return mid;
+			} else if (cm.SCORE_IS_OVER < pScore) {
+				left = mid + 1;
+			} else {
+				right = mid;
+			}
+		}
+		return -1;
+	}
+
+	public int getTargetBinary(int pScore, List<int> pList) {
+		int left = 0;
+		int right = pList.Count - 1;
+
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (pList[mid] == pScore) {
+				return mid;
+			} else if (pList[mid] < pScore) {
+				left = mid + 1;
+			} else {
+				right = mid;
+			}
+		}
+		return -1;
+	}
+
+	public int getTargetLinear(int pScore,List<int> pList) {
+		int result = 0;
+		for (int i = 0; i < pList.Count; i++) {
+			if (pList [i] == pScore) {
+				result = i;
+				break;
+			}
+		}
+		return result;
 	}
 	#endregion
 }

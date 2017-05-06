@@ -8,7 +8,7 @@ public class ScreenCtrl : MonoBehaviour {
 	Vector3 rightStock;
 
 	float animationTime = 0.1f;
-	float SCREEN_WIDTH = 640;
+	float SCREEN_WIDTH = 1280;
 
 	public PopUpCtrl _popUp;
 

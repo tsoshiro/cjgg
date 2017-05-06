@@ -85,7 +85,7 @@ public class Test {
 	[Test]
 	public void getCommentTest() {
 		// DataCtrl初期化
-		DataCtrl _dataCtrl = new DataCtrl ();
+		_dataCtrl = new DataCtrl ();
 		_dataCtrl.InitData ();
 		_dataCtrl.checkContent ();
 
@@ -93,10 +93,65 @@ public class Test {
 		Assert.AreEqual (1, id);
 
 		id = _dataCtrl.getCommentId (6);
-		Assert.AreEqual (2, id);
+		Assert.AreEqual (3, id);
 
 		id = _dataCtrl.getCommentId (89);
+//		Assert.Contains (17, id);
 		DebugLogger.Log ("id:" + id);
+	}
 
+
+	DataCtrl _dataCtrl;
+	[Test]
+	public void halfTest() {
+		_dataCtrl = new DataCtrl ();
+		_dataCtrl.InitData ();
+		_dataCtrl.checkContent ();
+
+		List<int> cmList = new List<int> ();
+		int n = 10000;
+		for (int i = 0; i < n; i++) {
+			cmList.Add (i);
+		}
+
+		DebugLogger.Log ("linear START");
+		timeList (cmList, false);
+
+		DebugLogger.Log ("half START");
+		timeList (cmList, true);
+	}
+
+	void timeList(List<int> cmList, bool flg) {
+		float time = Time.realtimeSinceStartup;
+		int result = getTargetMethod (50, cmList, flg);
+		Assert.AreEqual (50, result);
+
+		result = getTargetMethod (500, cmList,flg);
+		Assert.AreEqual (500, result);
+
+		result = getTargetMethod (875, cmList,flg);
+		Assert.AreEqual (875, result);
+
+		result = getTargetMethod (875, cmList,flg);
+		Assert.AreEqual (875, result);
+
+		result = getTargetMethod (999, cmList,flg);
+		Assert.AreEqual (999, result);
+
+
+		result = getTargetMethod (9999, cmList,flg);
+		Assert.AreEqual (9999, result);
+
+
+		time = Time.realtimeSinceStartup - time;
+		DebugLogger.Log ("time:"+time);
+	}
+
+	int getTargetMethod(int pScore, List<int> pList, bool flg) {
+		if (flg) {
+			return _dataCtrl.getTargetBinary(pScore, pList);
+		} else {
+			return _dataCtrl.getTargetLinear (pScore, pList);
+		}
 	}
 }
