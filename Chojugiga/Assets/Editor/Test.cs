@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 public class Test {
-	void init() {
-		var gameObject = new GameObject ();
-		gameObject.AddComponent<GachaCtrl>();
-		gachaCtrl = gameObject.GetComponent<GachaCtrl> ();
+	GachaCtrl gachaCtrl;
+	DataCtrl _dataCtrl;
+
+	[SetUp]
+	public void init() {
+		// DataCtrl初期化
+		_dataCtrl = new DataCtrl ();
+		_dataCtrl.InitData ();
+		_dataCtrl.checkContent ();
 	}
 		
 	public void ReadCardsTest() {
-		init ();
 		string sampleString = "1,3,4,5,8";
 		List<int> sampleList = gachaCtrl.getListFromString (sampleString);
 
@@ -32,9 +36,7 @@ public class Test {
 
 		nullTest ();
 	}
-
-	GachaCtrl gachaCtrl;
-
+		
 	void nullTest() {
 		string sampleString = "";
 		List<int> sampleList = gachaCtrl.getListFromString (sampleString);
@@ -50,11 +52,11 @@ public class Test {
 			DebugLogger.Log ("["+i+"]:"+pList[i]);
 		}
 	}
-
-	[Test]
+		
+	/// <summary>
+	/// ガチャチェック
+	/// </summary>
 	public void checkGachaAffordable() {
-		init ();
-
 		bool flg = gachaCtrl.checkGachaAffordable (999);
 		Assert.IsFalse (flg);
 
@@ -67,11 +69,6 @@ public class Test {
 
 	[Test]
 	public void getCommentTest() {
-		// DataCtrl初期化
-		_dataCtrl = new DataCtrl ();
-		_dataCtrl.InitData ();
-		_dataCtrl.checkContent ();
-
 		int id = _dataCtrl.getCommentId (0);
 		Assert.AreEqual (1, id);
 
@@ -88,8 +85,6 @@ public class Test {
 		Assert.Contains (20, list);
 	}
 
-
-	DataCtrl _dataCtrl;
 	[Test]
 	public void binarySearchTest() {
 		_dataCtrl = new DataCtrl ();
