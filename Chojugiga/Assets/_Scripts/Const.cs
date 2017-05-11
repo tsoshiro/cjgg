@@ -37,4 +37,8 @@ public class Const {
 	public static string PREF_REVIEW_FLG			= "review_flg";
 	public static string PREF_MESSAGE_FLG			= "message_flg";
 	#endregion
+
+	#region SOUND
+	public static float BGM_VOLUME = 1.0f;
+	#endregion
 }
