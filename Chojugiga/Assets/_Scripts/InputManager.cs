@@ -76,10 +76,10 @@ public class InputManager : MonoBehaviour {
 				_gameManager.flick ();
 			}
 		}
+	}
 
-		return;
-
-
+	// OLD
+	void flickOld() {
 		switch (touchState) {
 		case TouchState.NONE:
 			if (Input.GetMouseButtonDown (0)) {
@@ -100,7 +100,7 @@ public class InputManager : MonoBehaviour {
 				touchingCounter = 0;
 				lastTouchPosition = Input.mousePosition;
 			}
-				
+
 			if (Input.GetMouseButtonUp (0)) {
 				touchState = TouchState.NONE;
 				flickDistance = Vector2.Distance (touchPosition, lastTouchPosition);
@@ -110,7 +110,7 @@ public class InputManager : MonoBehaviour {
 				}
 			}
 			break;
-		}
+		}			
 	}
 
 	public bool isLastUpTap() {

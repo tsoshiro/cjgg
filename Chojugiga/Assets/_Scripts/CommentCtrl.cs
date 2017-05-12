@@ -8,12 +8,6 @@ public class CommentCtrl : MonoBehaviour {
 	public Text _comment;
 	public Image _image;
 
-	GameManager _gameManager;
-
-	void Start() {
-		_gameManager = GameManager.GetInstance ();
-	}
-
 	public void setComment(string pStr) {
 		_comment.text = pStr;
 	}
