@@ -19,6 +19,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public Text _labelCoin;
 	public Text _labelBestScore;
 
+	public GameObject _objWrongReason;
 	public Text _labelWrongReason;
 
 	// Data管理
@@ -106,6 +107,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		// SceneCtrl初期化
 		_resultSceneCtrl = _UI_group_result.GetComponent<ResultSceneCtrl>();
 
+		_objWrongReason = _labelWrongReason.transform.parent.gameObject;
+
 		state = GameState.TITLE;
 		_UI_now = _UI_group_title;
 	}
@@ -158,7 +161,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		// UI
 		setLabelAnswer ("", false);
-		_labelWrongReason.gameObject.SetActive (false);
+		_objWrongReason.SetActive (false);
 		setLabelScore (score);
 		setLabelTime (time);
 		setLabelCoin (_userData.coin);
@@ -257,7 +260,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		state = GameState.RESULT;
 
 		// 理由の表示
-		_labelWrongReason.gameObject.SetActive(true);
+		_objWrongReason.SetActive(true);
 
 		// 結果のセーブ
 		updateUserData (score);
