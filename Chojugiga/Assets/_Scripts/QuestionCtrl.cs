@@ -115,6 +115,11 @@ public class QuestionCtrl : MonoBehaviour {
 		}
 		return -1;
 	}
+
+	public Question getQuestion() {
+		Question q = questionList [counter];
+		return q;
+	}
 		
 	void init() {
 		initQuestions ();

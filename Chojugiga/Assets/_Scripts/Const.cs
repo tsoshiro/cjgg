@@ -21,6 +21,28 @@ public class Const {
 
 	public static int GACHA_COST = 1000;
 
+	#region STRING NAME
+	public static string FROG = "カエル";
+	public static string RABBIT = "ウサギ";
+	public static string OTHERS = "それ以外";
+
+	public static string LEFT = "ひだり";
+	public static string RIGHT = "みぎ";
+
+	public static string ANS_RIGHT = "◯";
+	public static string ANS_WRONG = "×";
+
+	public static string LBL_SCORE = "スコア";
+	public static string LBL_BEST = "ベスト";
+	public static string LBL_TIME = "タイム";
+	public static string LBL_COIN = "コイン";
+
+	public static string LBL_START = "スタート";
+	public static string LBL_CORRECT 	= "正解！";
+	public static string LBL_WRONG 		= "ハズレ！";
+
+	#endregion
+
 	#region PLAYER_PREFS
 	public static string PREF_FIRST_LAUNCH_TIME	= "first_launch_time";
 	public static string PREF_LAST_LAUNCH_TIME		= "last_launch_time";
