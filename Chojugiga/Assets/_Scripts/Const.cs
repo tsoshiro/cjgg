@@ -40,7 +40,6 @@ public class Const {
 	public static string LBL_START = "スタート";
 	public static string LBL_CORRECT 	= "正解！";
 	public static string LBL_WRONG 		= "ハズレ！";
-
 	#endregion
 
 	#region PLAYER_PREFS
@@ -62,5 +61,12 @@ public class Const {
 
 	#region SOUND
 	public static float BGM_VOLUME = 1.0f;
+	#endregion
+
+	#region COLOR
+	public static string COL_POSITIVE = "";
+	public static string COL_NEGATIVE = "";
+	public static string COL_DEFAULT = "";
+	public static string COL_BG = "";
 	#endregion
 }

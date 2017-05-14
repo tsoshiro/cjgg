@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class WrongReason : ScriptableObject {
 	public string reasonText;
+	string holder_bef = "【";
+	string holder_aft = "】";
+
 
 	public void setReason(int pAnswer, Question pQuestion) {
 		reasonText = "";
-		reasonText += "「" + getPosition (pQuestion.position) + "」に";
-		reasonText += "「" + getAnimalName (pQuestion.questionImage.animalType) + "」なので";
-		reasonText += "「" + getAnswer (pAnswer) + "」";
+		reasonText += getHold(getPosition (pQuestion.position)) + "に\n";
+		reasonText += getHold(getAnimalName (pQuestion.questionImage.animalType)) + "なので\n";
+		reasonText += getHold(getAnswer (pAnswer)) + "が正しい";
+	}
+
+	string getHold(string str) {
+		return holder_bef + str + holder_aft;
 	}
 
 	string getAnimalName(Const.AnimalType pAnimal) {

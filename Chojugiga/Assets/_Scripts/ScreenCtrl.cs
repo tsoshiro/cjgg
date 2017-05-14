@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 画面遷移機能のクラス
+/// </summary>
 public class ScreenCtrl : MonoBehaviour {
 	Vector3 displayPosition;
 	Vector3 leftStock;
@@ -26,7 +29,8 @@ public class ScreenCtrl : MonoBehaviour {
 		// 
 		iTween.MoveTo (pFrom, iTween.Hash ("time", animationTime, "position", leftStock));
 
-		// 
+		//
+//		pTo.transform.localPosition = rightStock;
 		iTween.MoveTo (pTo, iTween.Hash("time", animationTime, "position", displayPosition)); 
 	}
 
@@ -35,6 +39,7 @@ public class ScreenCtrl : MonoBehaviour {
 		iTween.MoveTo (pFrom, iTween.Hash ("time", animationTime, "position", rightStock));
 
 		// 
+//		pTo.transform.localPosition = leftStock;
 		iTween.MoveTo (pTo, iTween.Hash("time", animationTime, "position", displayPosition)); 		
 	}
 		

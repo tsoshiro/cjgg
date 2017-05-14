@@ -28,6 +28,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	// スコア管理
 	int score = 0;
 	int ADD_SCORE = 1;
+	bool isBest = false; // ベストスコアが出た時だけTRUE
 
 	// 時間管理
 	float time = 0f;
@@ -37,11 +38,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	float time_passed = 0f;
 
 	// ゲーム終了時のリザルト画面に遷移するまでの待ち時間
-	float WAIT_TIME_WRONG_ANSWER = 1f;
+	float WAIT_TIME_WRONG_ANSWER = 1.5f;
 	float WAIT_TIME_TIME_UP = 0.6f;
 
 	// 画像表示位置
-	float X = 2f;
+	float X = 153f;
 
 	// ゲーム開始時のカウントダウン
 	int START_COUNT_DOWN = 3;
@@ -71,6 +72,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public GameObject _pauseUI;
 	public GameObject _resultUI;
 
+	#region SceneCtrl
+	ResultSceneCtrl _resultSceneCtrl;
+	#endregion
+
 	void Awake() {
 		InitData ();
 		InitUserData ();
@@ -93,11 +98,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
 		_gachaCtrl = _UI_group_gacha.GetComponent<GachaCtrl> ();
-		_commentCtrl = _resultUI.GetComponent<CommentCtrl> ();
 
 		// UI Ctrl初期化
 		_screenCtrl = GameObject.Find ("UI").GetComponent<ScreenCtrl> ();
 		_screenCtrl.Init (_UI_group_title.transform.position);
+
+		// SceneCtrl初期化
+		_resultSceneCtrl = _UI_group_result.GetComponent<ResultSceneCtrl>();
 
 		state = GameState.TITLE;
 		_UI_now = _UI_group_title;
@@ -134,6 +141,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		state = GameState.TITLE;
 	}
 
+	/// <summary>
+	/// ゲームの準備
+	/// インゲームデータを初期化
+	/// </summary>
 	void setGameReady() {
 		// 質問リストの初期化
 		_questionCtrl.initQuestions ();
@@ -143,9 +154,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		time = TIME_DEFAULT;
 		time_passed = 0;
 		score = 0;
+		isBest = false;
 
 		// UI
 		setLabelAnswer ("", false);
+		_labelWrongReason.gameObject.SetActive (false);
 		setLabelScore (score);
 		setLabelTime (time);
 		setLabelCoin (_userData.coin);
@@ -205,8 +218,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		if (Input.GetMouseButtonDown (0) ||
 			Input.GetKeyDown(KeyCode.Space) ) {
 			if (!_inputManager.disabled) {
-				_resultUI.SetActive (false);
-				setGameReady ();
+//				_resultUI.SetActive (false);
+//				setGameReady ();
 			}
 		}
 	}
@@ -229,7 +242,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		gameOver (true);
 	}
 
+	void addTime(float pTime) {
+		time += pTime;
+		setLabelTime (time);
+	}
+	#endregion
 
+	#region GameOver
 	void gameOver(bool pIsTimeUp) {
 		StartCoroutine (gameOverCoroutine (pIsTimeUp));		
 	}
@@ -240,59 +259,48 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		// 理由の表示
 		_labelWrongReason.gameObject.SetActive(true);
 
-		// 結果の表示(リザルト画面用)
-		showResult (score);
-
 		// 結果のセーブ
 		updateUserData (score);
 
+		// 結果の表示(リザルト画面用)
+		showResult (score);
+
 		// 入力の拒否
+		// 入力無効時間の設定
 		float waitTime = (pIsTimeUp) ? WAIT_TIME_TIME_UP : WAIT_TIME_WRONG_ANSWER;
-		_inputManager.setDisabled (waitTime + 0.5f);
+		_inputManager.setDisabled (waitTime + 0);
 
 		yield return new WaitForSeconds(waitTime);
 
+		// リザルト画面に遷移
 		Transition (_UI_now, _UI_group_result);
 	}
-
-	void gameOver() {
-		state = GameState.RESULT;
-	
-		_imagePanel.SetActive (false);
-
-		showResult (score);
-
-		updateUserData (score);
-	
-		_inputManager.setDisabled (2f);
-		Invoke ("guideToReplay", 2f);
-	}
-
+		
 	/// <summary>
-	/// 結果表示・コメント表示
+	/// リザルトのデータを画面に出力しておく(遷移ではない)
 	/// </summary>
 	/// <param name="pScore">P score.</param>
 	void showResult(int pScore) {
-		// 結果表示
-		_commentCtrl.setResult ("RESULT:"+pScore);
-
-		// コメント出力
+		// コメント取得
 		int id = _dataCtrl.getCommentId(pScore);
 		string comment = _dataCtrl.getComment(id);
-		_commentCtrl.setComment (comment);
+
+		// 結果データ生成
+		Result result = ScriptableObject.CreateInstance<Result> ();
+		result.score = pScore;
+		result.bestScore = _userData.best_score;
+		result.coin = _userData.coin;
+		result.isBest = isBest;
+		result.comment = comment;
+
+		// リザルト画面に出力
+		_resultSceneCtrl.setResult(result);
 
 		// 画像差し替え(余裕があれば)
-
-		_resultUI.SetActive (true);
 	}
 		
 	void guideToReplay() {
 		_commentCtrl.setResult (_commentCtrl._result.text + "\nREPLAY?");
-	}
-
-	void addTime(float pTime) {
-		time += pTime;
-		setLabelTime (time);
 	}
 	#endregion
 
@@ -302,9 +310,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	/// </summary>
 	/// <param name="pScore">P score.</param>
 	void updateUserData(int pScore) {
-		addCoin (pScore);
-		setHighScore (pScore);
-		playCountUp ();
+		addCoin (pScore); // 累計
+		setBestScore (pScore); // ベストスコア更新
+		playCountUp (); // プレイ回数更新
 
 		_userData.save ();
 	}
@@ -314,9 +322,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		setLabelCoin (_userData.coin);
 	}
 
-	void setHighScore(int pScore) {
+	void setBestScore(int pScore) {
+		// ベストスコアか確認し、trueなら数値を更新
 		if (_userData.checkIfIsNewRecord (Const.PREF_BEST_SCORE, pScore)) {
 			_userData.best_score = pScore;
+			isBest = true;
 			setLabelBestScore (pScore);
 		};
 	}
@@ -356,16 +366,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			addScore (ADD_SCORE);
 
 			addTime (_dataCtrl.getAddTime(score));
+			setLabelAnswer (answer);
+			UpdateImage ();
 		} else {
 			answer = Const.LBL_WRONG;
 			wrongAnswer (_questionCtrl.getAnswer());
-
-			return; // 誤答した場合は、UpdateImage()しない。
+			setLabelAnswer (answer, false);
 		}
 		DebugLogger.Log (answer);
-		setLabelAnswer (answer);
-
-		UpdateImage ();
 	}
 
 	/// <summary>
@@ -374,10 +382,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	/// <param name="pRightAnswer">P right answer.</param>
 	void wrongAnswer(int pRightAnswer) {
 		// WrongReasonを取得
-		WrongReason wr = new WrongReason();
+		WrongReason wr = ScriptableObject.CreateInstance<WrongReason>();
 		wr.setReason (pRightAnswer, _questionCtrl.getQuestion());
 		string str = wr.reasonText;
-		_labelWrongReason.text = Const.ANS_WRONG + "!\n" + str;
+
+		// WrongReasonラベルに出力
+		_labelWrongReason.text = str;
 
 		gameOver (false);
 	}
@@ -427,14 +437,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 	#endregion
 
-	#region Transition
-	void SwitchScreen(GameState pFrom, GameState pTo) {
-		
-	}
-
-	#endregion
-
-	#region Action
+	#region ActionButton
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
 		if (_inputManager.disabled) // input無効になっているかどうかチェック
@@ -450,29 +453,42 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			answerDown ();
 	}
 
-	// Private Methods
-	void actionButtonPlay() {
-		if (state == GameState.TITLE) {
+	// Public Methods
 
-			Transition (_UI_now, _UI_group_standby);
+	/// <summary>
+	/// リプレイ(RESULT→STAND_BY)
+	/// </summary>
+	public void Replay() {
+		if (state == GameState.RESULT) {
+			TransitionBackwards (_UI_now, _UI_group_standby);
 			state = GameState.STAND_BY;
 			setGameReady ();
 		}
 	}
-
-	void actionButtonStart() {
-		if (state == GameState.STAND_BY) {
-			Transition (_UI_now, _UI_group_game);
-			startGame ();
-		}
+		
+	/// <summary>
+	/// タイトルに戻る(RESULT→TITLE, SETTING→TITLE, PAUSE→TITLE)
+	/// </summary>
+	public void Title() {
+		if (state == GameState.PAUSE) { // PAUSE→TITLEの場合
+			stopGame ();
+			_pauseUI.SetActive (false);
+		}				
+		state = GameState.TITLE;
+		TransitionBackwards (_UI_now, _UI_group_title);
 	}
 
-	void actionButtonGacha() {
-		if (state == GameState.TITLE) {
-			Transition (_UI_now, _UI_group_gacha);
+	public void ShareResult() {
+	
+	}
 
-			state = GameState.GACHA;
-			_gachaCtrl.createCardList ();
+	// Private Methods
+	// TITLE SCENE
+	void actionButtonPlay() {
+		if (state == GameState.TITLE) {
+			Transition (_UI_now, _UI_group_standby);
+			state = GameState.STAND_BY;
+			setGameReady ();
 		}
 	}
 
@@ -482,9 +498,26 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		}
 	}
 
+	// SETTING SCENE
 	void actionButtonBack() {
+		Title ();
+	}
+
+	// STAND_BY SCENE
+	void actionButtonStart() {
+		if (state == GameState.STAND_BY) {
+			Transition (_UI_now, _UI_group_game);
+			startGame ();
+		}
+	}
+
+	// DONT USE
+	void actionButtonGacha() {
 		if (state == GameState.TITLE) {
-			TransitionBackwards (_UI_now, _UI_group_title);
+			Transition (_UI_now, _UI_group_gacha);
+
+			state = GameState.GACHA;
+			_gachaCtrl.createCardList ();
 		}
 	}
 
@@ -494,6 +527,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		}
 	}
 		
+	// IN GAME
 	void actionButtonLeft() {
 		answerLeft ();
 	}
@@ -514,25 +548,26 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void actionButtonPlayFromStart() {
 		// PLAY FROM RESTART
-		if (state == GameState.PAUSE)
-			Continue ();
-	}
+		if (state == GameState.PAUSE) {
+			// ゲームを停止
+			stopGame ();
+			_pauseUI.SetActive (false);
 
-	void actionButtonHome() {
-		if (state != GameState.TITLE) {
-			if (state == GameState.PAUSE) {
-				stopGame ();
-				_pauseUI.SetActive (false);
-			}				
-			
-			state = GameState.TITLE;
-			TransitionBackwards (_UI_now, _UI_group_title);
+			// STAND_BY画面にして準備する
+			TransitionBackwards(_UI_now, _UI_group_standby);
+			setGameReady();
 		}
 	}
 
+	void actionButtonHome() {
+		Title ();
+	}
+	#endregion
+
 	void stopGame() {
 		setGameReady ();
-		_imagePanel.GetComponent<SpriteRenderer> ().sprite = null;
+		_imagePanel.GetComponent<Image> ().sprite = null;
+		_imagePanel.SetActive (false);
 	}
 		
 	void Transition(GameObject pFrom, GameObject pTo) {
@@ -545,8 +580,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_UI_now = pTo;
 	}
 
-	#endregion
-
 	void Pause() {		
 		state = GameState.PAUSE;
 		_pauseUI.SetActive (true);
@@ -558,9 +591,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	void UpdateImage() {
-		_imagePanel.GetComponent<SpriteRenderer> ().sprite = _questionCtrl.getQSprite();
+		_imagePanel.GetComponent<Image>().sprite = _questionCtrl.getQSprite();
 		setPosition ();
-//		_imagePanel.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("image_3");
 	}
 
 	void setPosition() {
@@ -571,7 +603,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		} else {
 			pos.x = X;
 		}
-		_imagePanel.transform.position = pos;
+		_imagePanel.transform.localPosition = pos;
 	}
 
 	void OnApplicationPause (bool pauseStatus)
