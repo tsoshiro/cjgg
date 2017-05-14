@@ -416,9 +416,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			_screenCtrl.Transition (_UI_now, _UI_group_game);
 			_UI_now = _UI_group_game;
 
-//			_UI_group_title.SetActive (false);
-//			_UI_group_game.SetActive (true);
-
 			state = GameState.STAND_BY;
 			setGameReady ();
 		}
@@ -428,10 +425,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		if (state == GameState.TITLE) {
 			_screenCtrl.Transition (_UI_now, _UI_group_gacha);
 			_UI_now = _UI_group_gacha;
-
-//			_UI_group_title.SetActive (false);
-//			_UI_group_game.SetActive (false);
-//			_UI_group_gacha.SetActive (true);
 
 			state = GameState.GACHA;
 			_gachaCtrl.createCardList ();
