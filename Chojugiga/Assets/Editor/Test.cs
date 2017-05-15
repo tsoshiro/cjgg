@@ -69,14 +69,19 @@ public class Test {
 
 	[Test]
 	public void getCommentTest() {
-		int id = _dataCtrl.getCommentId (0);
-		Assert.AreEqual (1, id);
+		List<int> list = _dataCtrl.getCommentIdList (0);
+		DebugLogger.Log ("0");
+		logList (list);
+		Assert.Contains (1, list);
 
-		id = _dataCtrl.getCommentId (6);
-		Assert.AreEqual (3, id);
+		list = _dataCtrl.getCommentIdList (30);
+		DebugLogger.Log ("30");
+		logList (list);
 
-		List<int> list = _dataCtrl.getCommentIdList (89);
-		Assert.Contains (17, list);
+		Assert.Contains (9, list);
+
+		list = _dataCtrl.getCommentIdList (89);
+		Assert.Contains (14, list);
 
 		list = _dataCtrl.getCommentIdList (91);
 		Assert.Contains (19, list);

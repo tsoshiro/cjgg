@@ -72,6 +72,17 @@ public class DataCtrl {
 	/// <param name="pId">P identifier.</param>
 	public string getComment(int pId) {
 		string str = _commentMasterList [pId - 1].COMMENT;
+		return convertComment(str);
+	}
+
+	/// <summary>
+	/// 改行処理
+	/// </summary>
+	/// <returns>The comment.</returns>
+	/// <param name="pString">P string.</param>
+	string convertComment(string pString) {
+		string str = pString;
+		str = str.Replace ("<br>", "\n");
 		return str;
 	}
 
@@ -137,6 +148,7 @@ public class DataCtrl {
 		for (int i = targetScoreIndex + 1; i < pList.Count; i++) {
 			if (pList [i].SCORE_IS_OVER == pTargetScore) {
 				list.Add (pList [i].ID);
+				continue;
 			}
 			break;
 		}
@@ -145,6 +157,7 @@ public class DataCtrl {
 		for (int i = targetScoreIndex - 1; i >= 0; i--) {
 			if (pList [i].SCORE_IS_OVER == pTargetScore) {
 				list.Add (pList [i].ID);
+				continue;
 			}
 			break;
 		}

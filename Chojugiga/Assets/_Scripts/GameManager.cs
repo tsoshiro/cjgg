@@ -161,6 +161,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		// UI
 		setLabelAnswer ("", false);
+		ColorEditor.setColorFromColorCode (_labelAnswer.gameObject, Const.COL_POSITIVE);
 		_objWrongReason.SetActive (false);
 		setLabelScore (score);
 		setLabelTime (time);
@@ -353,7 +354,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	void answer(int pInputAnswer) {
-		if (state != GameState.PLAYING) {
+		if (state != GameState.PLAYING ||
+			_inputManager.disabled) {
 			return;
 		}
 		string answer = "";
@@ -374,6 +376,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		} else {
 			answer = Const.LBL_WRONG;
 			wrongAnswer (_questionCtrl.getAnswer());
+
+			// 色を変更
+			ColorEditor.setColorFromColorCode (_labelAnswer.gameObject, Const.COL_NEGATIVE);
 			setLabelAnswer (answer, false);
 		}
 		DebugLogger.Log (answer);
@@ -419,6 +424,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_labelAnswer.gameObject.SetActive (true);
 		if (isFading) {
 			Invoke ("disableLabelAnswer", 0.4f);
+		} else {
+			CancelInvoke (); // 消えないようにする
 		}
 	}
 

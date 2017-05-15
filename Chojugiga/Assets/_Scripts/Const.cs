@@ -64,9 +64,11 @@ public class Const {
 	#endregion
 
 	#region COLOR
-	public static string COL_POSITIVE = "";
-	public static string COL_NEGATIVE = "";
-	public static string COL_DEFAULT = "";
-	public static string COL_BG = "";
+	public static string COL_POSITIVE = "6B9E8B"; // 緑
+	public static string COL_NEGATIVE = "A62121"; // 赤
+	public static string COL_DEFAULT = "9F9F9FFF"; // 灰色
+	public static string COL_BG = "F7F1CD"; // ベージュ
+	public static string COL_BROWN = "806835"; // 茶色
+	public static string COL_DARK = "130D0D"; // 黒
 	#endregion
 }
