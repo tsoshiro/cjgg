@@ -10,11 +10,23 @@ public class ResultSceneCtrl : SceneCtrlBase {
 	public Text _comment;
 	public Image _image;
 
+	public GameObject _labelNewBest;
+
 	public void setResult(Result pResult) {
 		_labelScore.text = ""+pResult.score;
+
 		_labelBest.text = ""+pResult.bestScore;
 		_labelCoin.text = ""+pResult.coin;
 		_comment.text = pResult.comment;
+
+		// HIGH SCOREの時は、NEW HIGH SCOREのラベルを表示する
+		if (pResult.isBest) {
+			_labelNewBest.SetActive (true);
+			_labelScore.text = "<color=#" + Const.COL_POSITIVE + ">" + _labelScore.text +
+			"</color>";
+		} else {
+			_labelNewBest.SetActive (false);
+		}
 	}
 
 	// StandBy画面に遷移
