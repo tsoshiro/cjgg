@@ -17,7 +17,7 @@ public class ScreenShotTest : MonoBehaviour {
 		_label.text = str;
 
 		// Capture
-		StartCoroutine (ScreenshotCaptor.Capture (
+		StartCoroutine (ScreenshotCapture.Capture (
 			fileName,
 			callbackCapture)
 		);
@@ -36,8 +36,8 @@ public class ScreenShotTest : MonoBehaviour {
 	}
 
 	void actionButtonShare() {
-		SocialConnector.SocialConnector.Share ("シェアテスト",
-			"http://www.google.co.jp", 
+		SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
+			Const.APP_URL, 
 			Application.persistentDataPath + "/" + fileName);
 	}
 

@@ -71,4 +71,10 @@ public class Const {
 	public static string COL_BROWN = "806835"; // 茶色
 	public static string COL_DARK = "130D0D"; // 黒
 	#endregion
+
+	#region SHARE
+	public static string SC_NAME = "sc_shot.png";
+	public static string SHARE_MESSAGE = "テスト";
+	public static string APP_URL = "http://bit.ly/1VBDVpt";
+	#endregion
 }

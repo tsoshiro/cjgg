@@ -30,7 +30,7 @@ public class ScreenCtrl : MonoBehaviour {
 		iTween.MoveTo (pFrom, iTween.Hash ("time", animationTime, "position", leftStock));
 
 		//
-//		pTo.transform.localPosition = rightStock;
+		pTo.transform.position = rightStock;
 		iTween.MoveTo (pTo, iTween.Hash("time", animationTime, "position", displayPosition)); 
 	}
 
@@ -39,7 +39,7 @@ public class ScreenCtrl : MonoBehaviour {
 		iTween.MoveTo (pFrom, iTween.Hash ("time", animationTime, "position", rightStock));
 
 		// 
-//		pTo.transform.localPosition = leftStock;
+		pTo.transform.position = leftStock;
 		iTween.MoveTo (pTo, iTween.Hash("time", animationTime, "position", displayPosition)); 		
 	}
 		

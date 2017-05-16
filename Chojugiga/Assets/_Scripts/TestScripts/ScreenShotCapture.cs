@@ -11,15 +11,14 @@ using System.Collections;
 /// <summary>
 /// スクリーンショットを撮るクラス
 /// </summary>
-public static class ScreenshotCaptor {
+public static class ScreenshotCapture {
 
 	/// <summary>
 	/// スクリーンショットを撮る
 	/// </summary>
-	public static IEnumerator Capture(string imageName = "image.png", Action callback = null){
-
+	public static IEnumerator Capture(string imageName = "", Action callback = null){		
 		//スクショを保存するパスを作成
-		string imagePath = imageName;
+		string imagePath = (imageName == "") ? Const.SC_NAME : imageName;
 
 		//iOS、Android実機の時はパスにApplication.persistentDataPathを追加
 		#if !UNITY_EDITOR && (UNITY_IOS || UNITY_ANDROID)

@@ -29,6 +29,7 @@ public class ResultSceneCtrl : SceneCtrlBase {
 		}
 	}
 
+	#region ActionButton
 	// StandBy画面に遷移
 	void actionButtonReplay() {
 		_gameManager.Replay ();
@@ -39,6 +40,7 @@ public class ResultSceneCtrl : SceneCtrlBase {
 	}
 
 	void actionButtonShare() {
-//		_gameManager.
+		_gameManager.ShareResult ();
 	}
+	#endregion
 }

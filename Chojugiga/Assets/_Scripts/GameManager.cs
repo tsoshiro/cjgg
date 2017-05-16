@@ -11,6 +11,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	GachaCtrl _gachaCtrl;
 	ScreenCtrl _screenCtrl;
 	CommentCtrl _commentCtrl;
+	ScreenShotCtrl _screenShotCtrl;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -99,6 +100,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_timeManager = this.gameObject.GetComponent<TimeManager> ();
 
 		_gachaCtrl = _UI_group_gacha.GetComponent<GachaCtrl> ();
+		_screenShotCtrl = this.gameObject.GetComponent<ScreenShotCtrl> ();
 
 		// UI Ctrl初期化
 		_screenCtrl = GameObject.Find ("UI").GetComponent<ScreenCtrl> ();
@@ -488,8 +490,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		TransitionBackwards (_UI_now, _UI_group_title);
 	}
 
+	/// <summary>
+	/// 結果を共有
+	/// </summary>
 	public void ShareResult() {
-	
+		_screenShotCtrl.actionShare (true);
 	}
 
 	// Private Methods
@@ -505,6 +510,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void actionButtonSettings() {
 		if (state == GameState.TITLE) {
 			Transition (_UI_now, _UI_group_settings);
+		}
+	}
+
+	/// <summary>
+	/// タイトル画像を共有
+	/// </summary>
+	void actionButtonShare() {
+		if (state == GameState.TITLE) {
+			_screenShotCtrl.actionShare (true);
 		}
 	}
 
