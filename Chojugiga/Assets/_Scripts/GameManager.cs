@@ -527,6 +527,39 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		Title ();
 	}
 
+	void actionButtonReview() {
+		
+	}
+
+	bool isSoundOn = true;
+	void actionButtonSound() {
+		isSoundOn = !isSoundOn;
+
+		// TODO サウンドのON/OFF設定を変える
+		// AudioManager
+
+
+		// ボタンの見た目を変える
+		GameObject btn = GameObject.Find ("ButtonSound");
+
+		// ONならPOSITIVE
+		string btnStr = Const.BTN_SOUND_ON;
+		int btnImageIndex = 0; 
+		if (!isSoundOn) {
+			// OFFならNEGATIVE
+			btnStr = Const.BTN_SOUND_OFF;
+			btnImageIndex = 1; 
+		}
+
+		// 画像と文字を更新
+		btn.GetComponentInChildren<Text>().text = btnStr;
+		btn.GetComponent<ButtonImage> ().setImage (btnImageIndex);
+	}
+
+	void actionButtonOtherGames() {
+		
+	}
+
 	// STAND_BY SCENE
 	void actionButtonStart() {
 		if (state == GameState.STAND_BY) {

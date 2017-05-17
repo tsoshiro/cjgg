@@ -77,4 +77,9 @@ public class Const {
 	public static string SHARE_MESSAGE = "テスト";
 	public static string APP_URL = "http://bit.ly/1VBDVpt";
 	#endregion
+
+	#region BUTTON
+	public static string BTN_SOUND_ON = "サウンドあり";
+	public static string BTN_SOUND_OFF = "サウンドなし";
+	#endregion
 }
