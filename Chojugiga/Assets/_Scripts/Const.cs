@@ -64,18 +64,19 @@ public class Const {
 	#endregion
 
 	#region COLOR
-	public static string COL_POSITIVE = "6B9E8B"; // 緑
-	public static string COL_NEGATIVE = "A62121"; // 赤
-	public static string COL_DEFAULT = "9F9F9FFF"; // 灰色
-	public static string COL_BG = "F7F1CD"; // ベージュ
-	public static string COL_BROWN = "806835"; // 茶色
-	public static string COL_DARK = "130D0D"; // 黒
+	public static string COL_POSITIVE 	= "6B9E8B"; // 緑
+	public static string COL_NEGATIVE 	= "A62121"; // 赤
+	public static string COL_DEFAULT 	= "9F9F9FFF"; // 灰色
+	public static string COL_BG 		= "F7F1CD"; // ベージュ
+	public static string COL_BROWN 		= "806835"; // 茶色
+	public static string COL_DARK 		= "130D0D"; // 黒
 	#endregion
 
 	#region SHARE
-	public static string SC_NAME = "sc_shot.png";
-	public static string SHARE_MESSAGE = "テスト";
-	public static string APP_URL = "http://bit.ly/1VBDVpt";
+	public static string SC_NAME		= "sc_shot.png";
+	public static string SHARE_MESSAGE 	= "テスト";
+	public static string APP_URL 		= "http://bit.ly/1VBDVpt"; // TEST
+	public static string DEV_URL 		= "http://bit.ly/2rsY7yY"; // FIXED
 	#endregion
 
 	#region BUTTON

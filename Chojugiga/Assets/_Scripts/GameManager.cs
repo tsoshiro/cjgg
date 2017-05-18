@@ -13,6 +13,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	CommentCtrl _commentCtrl;
 	ScreenShotCtrl _screenShotCtrl;
 
+	// Sound Manager
+	AudioManager _audioManager;
+
 	// Label Settings
 	public Text _labelAnswer;
 	public Text _labelScore;
@@ -108,8 +111,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		// SceneCtrl初期化
 		_resultSceneCtrl = _UI_group_result.GetComponent<ResultSceneCtrl>();
-
 		_objWrongReason = _labelWrongReason.transform.parent.gameObject;
+
+		// Sound初期化
+		_audioManager = this.transform.GetComponentInChildren<AudioManager>();
+		setSound (false); // MUTE ONで初期化
 
 		state = GameState.TITLE;
 		_UI_now = _UI_group_title;
@@ -449,6 +455,50 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 	#endregion
 
+	#region SOUND
+	/// <summary>
+	/// 今の指定に合わせてサウンドON/OFFの切り替え
+	/// </summary>
+	void changeSoundSetting() {
+		_audioManager.isMute = !_audioManager.isMute;
+		setSound ();
+	}
+
+	/// <summary>
+	/// bool値を指定してサウンドON/OFFの切り替え
+	/// </summary>
+	/// <param name="pFlg">If set to <c>true</c> p flg.</param>
+	void setSound(bool pIsMute) {
+		_audioManager.isMute = pIsMute;
+		setSound ();
+	}
+
+	/// <summary>
+	/// サウンドON/OFF切り替えの中身の処理
+	/// </summary>
+	void setSound() {
+		// サウンドのON/OFF設定を変える
+		_audioManager.setMuteFlg(_audioManager.isMute);
+
+		// ボタンの見た目を変える
+		GameObject btn = GameObject.Find ("ButtonSound");
+
+		// ONならPOSITIVE
+		string btnStr = Const.BTN_SOUND_ON;
+		int btnImageIndex = 0; 
+		if (_audioManager.isMute) {
+			// OFFならNEGATIVE
+			btnStr = Const.BTN_SOUND_OFF;
+			btnImageIndex = 1; 
+		}
+
+		// 画像と文字を更新
+		btn.GetComponentInChildren<Text>().text = btnStr;
+		btn.GetComponent<ButtonImage> ().setImage (btnImageIndex);
+	}
+
+	#endregion
+
 	#region ActionButton
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
@@ -530,34 +580,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void actionButtonReview() {
 		
 	}
-
-	bool isSoundOn = true;
+		
 	void actionButtonSound() {
-		isSoundOn = !isSoundOn;
-
-		// TODO サウンドのON/OFF設定を変える
-		// AudioManager
-
-
-		// ボタンの見た目を変える
-		GameObject btn = GameObject.Find ("ButtonSound");
-
-		// ONならPOSITIVE
-		string btnStr = Const.BTN_SOUND_ON;
-		int btnImageIndex = 0; 
-		if (!isSoundOn) {
-			// OFFならNEGATIVE
-			btnStr = Const.BTN_SOUND_OFF;
-			btnImageIndex = 1; 
-		}
-
-		// 画像と文字を更新
-		btn.GetComponentInChildren<Text>().text = btnStr;
-		btn.GetComponent<ButtonImage> ().setImage (btnImageIndex);
+		changeSoundSetting ();
 	}
 
 	void actionButtonOtherGames() {
-		
+		Application.OpenURL (Const.DEV_URL);
 	}
 
 	// STAND_BY SCENE
