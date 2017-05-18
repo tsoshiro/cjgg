@@ -19,10 +19,23 @@ public class PopUpCtrl : MonoBehaviour {
 		this.gameObject.SetActive (false);
 	}
 
+	public void Open(string pTitle, string pContent, List<Button> pButtonList) {
+	
+	}
+
 	public void Open(string pTitle, string pContent = "") {
 		_title.text = pTitle;
 
 		if (pContent != "") 
+			_content.text = pContent;
+
+		OpenAnimation ();
+	}
+
+	public void Open(string pContent = "") {
+		_title.text = "";
+
+		if (pContent != "")
 			_content.text = pContent;
 
 		OpenAnimation ();
@@ -67,4 +80,9 @@ public class PopUpCtrl : MonoBehaviour {
 		this.gameObject.SetActive (false);
 		this.gameObject.transform.localScale = defaultScale;
 	}
+
+	#region DATA
+
+
+	#endregion
 }

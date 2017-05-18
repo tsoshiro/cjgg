@@ -82,5 +82,14 @@ public class Const {
 	#region BUTTON
 	public static string BTN_SOUND_ON = "サウンドあり";
 	public static string BTN_SOUND_OFF = "サウンドなし";
+	public enum ButtonType {
+		POSITIVE, NEGATIVE, DEFAULT
+	}
 	#endregion
+
+	#region ADS
+	public static int INTERVAL_REVIEW_REQUEST = 5;
+	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 20;
+	#endregion
+
 }
