@@ -7,19 +7,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	void Start () {
 		_gameManager = GameManager.GetInstance ();
 	}
-
-	public class Button {
-		public string _text;
-		public int _buttonImage;
-		public string _method;
-
-		public Button(string pText, int pInt, string pMethod) {
-			_text = pText;
-			_buttonImage = pInt;
-			_method = pMethod;
-		}
-	}
-
+		
 	public bool ReviewRequest () {
 		// プレイ回数がx回以上のユーザーに対して
 		int playCount = _gameManager._userData.play_count;
@@ -37,9 +25,9 @@ public class ReviewRequestCtrl : MonoBehaviour {
 			string title = "";
 			string content = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
 
-			List<Button> buttons = new List<Button> ();
-			buttons.Add (new Button ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
-			buttons.Add (new Button ("そんなに...", (int)Const.ButtonType.DEFAULT, "NoThanks"));
+			List<CustomButton> buttons = new List<CustomButton> ();
+			buttons.Add (new CustomButton ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
+			buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "NoThanks"));
 
 			// YES NO ダイアログ
 			//「楽しんでいただけていますか？」とのダイアログを出す。
@@ -83,10 +71,10 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		string content = "よかったら\n☆5レビュー、\nお願いします。";
 		string image = "";
 
-		List<Button> buttons = new List<Button> ();
-		buttons.Add (new Button ("レビューする", (int)Const.ButtonType.POSITIVE, "OpenURL"));
-		buttons.Add (new Button ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
-		buttons.Add (new Button ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
+		List<CustomButton> buttons = new List<CustomButton> ();
+		buttons.Add (new CustomButton ("レビューする", (int)Const.ButtonType.POSITIVE, "OpenURL"));
+		buttons.Add (new CustomButton ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
+		buttons.Add (new CustomButton ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
 
 		// Dialog出力
 	}
@@ -121,12 +109,23 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		string title = "";
 		string content = "よろしければ\nご意見・ご要望、\nお待ちしています。";
 
-		List<Button> buttons = new List<Button> ();
-		buttons.Add (new Button ("ひとこと言う", (int)Const.ButtonType.POSITIVE, "OpenDevURL"));
-		buttons.Add (new Button ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
-		buttons.Add (new Button ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
+		List<CustomButton> buttons = new List<CustomButton> ();
+		buttons.Add (new CustomButton ("ひとこと言う", (int)Const.ButtonType.POSITIVE, "OpenDevURL"));
+		buttons.Add (new CustomButton ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
+		buttons.Add (new CustomButton ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
 
 		// YES NO ダイアログ
 		// お問合せ
+	}
+}
+public class CustomButton {
+	public string _text;
+	public int _buttonImage;
+	public string _method;
+
+	public CustomButton(string pText, int pInt, string pMethod) {
+		_text = pText;
+		_buttonImage = pInt;
+		_method = pMethod;
 	}
 }

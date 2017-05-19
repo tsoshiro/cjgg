@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PopUpCtrl : MonoBehaviour {
 	public InputManager _inputManager;
@@ -11,6 +12,9 @@ public class PopUpCtrl : MonoBehaviour {
 
 	public Vector3 defaultScale;
 
+	public GameObject _buttonPrefab;
+	public List<Sprite> _buttonImages;
+
 	// Use this for initialization
 	void Start () {
 		// defaultScaleに初期値を入れ、Scaleをゼロにしてインアクティブにしておく
@@ -19,8 +23,39 @@ public class PopUpCtrl : MonoBehaviour {
 		this.gameObject.SetActive (false);
 	}
 
-	public void Open(string pTitle, string pContent, List<Button> pButtonList) {
-	
+	public void Open(string pTitle, string pContent, List<CustomButton> pButtonList, GameObject pTargetObject) {
+
+		_title.text = pTitle;
+		_content.text = pContent;
+
+		// Buttonの配置
+		for (int i = 0; i < pButtonList.Count; i++) {
+			setButtonSetting (pButtonList [i], Vector3.zero, pTargetObject);
+		}
+
+	}
+
+	void setButtonSetting(CustomButton pButton, Vector3 pPosition, GameObject pTargetObject) {
+		GameObject obj = (GameObject)Instantiate(_buttonPrefab);
+		obj.name = pButton._method;
+
+
+//		EventTrigger et = obj.GetComponent<EventTrigger> ();
+//
+//		PointerEventData ped = new PointerEventData ();
+//		ped.selectedObject = pTargetObject;
+//
+//		et.OnPointerClick (ped);
+//
+//		EventTrigger.TriggerEvent te = new EventTrigger.TriggerEvent ();
+//		te.AddListener (actionBtn);
+//
+//
+//		EventTrigger.Entry entry = new EventTrigger.Entry ();
+
+
+		obj.GetComponentInChildren<Text> ().text = pButton._text;
+		setButtonImage (obj, pButton._buttonImage);
 	}
 
 	public void Open(string pTitle, string pContent = "") {
@@ -40,6 +75,12 @@ public class PopUpCtrl : MonoBehaviour {
 
 		OpenAnimation ();
 	}
+
+	#region ButtonImage
+	void setButtonImage(GameObject pGameObject, int pImageIndex) {
+		pGameObject.GetComponent<Image> ().sprite = _buttonImages [pImageIndex];
+	}
+	#endregion
 
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
