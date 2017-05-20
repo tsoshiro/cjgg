@@ -116,6 +116,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void Close() {
 		// 閉じる
+		_popUpCtrl.Close();
 	}
 
 	void AskForMessage () {

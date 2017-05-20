@@ -18,7 +18,7 @@ public class PopUpCtrl : MonoBehaviour {
 
 	float X_VALUE = 160f;
 	float Y_VALUE = 80f;
-	float RESIZE_RATE = 0.5f;
+	float RESIZE_RATE = 0.75f;
 
 	List<GameObject> _buttons = new List<GameObject>();
 
@@ -115,14 +115,15 @@ public class PopUpCtrl : MonoBehaviour {
 
 		setButtonImage (obj, pButton._buttonImage);
 
-
-		// サイズ・位置調整
+		// 位置調整
 		obj.transform.SetParent(this.transform);
+		obj.transform.localPosition = new Vector3 (0, -100, 0); // BasePos設定
+		obj.transform.localPosition += pPosition;
 
+		// サイズ調整
 		RectTransform rc = obj.GetComponent<RectTransform> ();
 		rc.sizeDelta = rc.sizeDelta * RESIZE_RATE;
-
-		obj.transform.localPosition = pPosition;
+		obj.transform.localScale = Vector3.one;
 
 		_buttons.Add (obj);
 	}
