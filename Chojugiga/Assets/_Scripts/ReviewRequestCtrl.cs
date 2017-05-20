@@ -4,8 +4,15 @@ using System.Collections.Generic;
 
 public class ReviewRequestCtrl : MonoBehaviour {
 	GameManager _gameManager;
+	public PopUpCtrl _popUpCtrl; 
+
 	void Start () {
 		_gameManager = GameManager.GetInstance ();
+	}
+
+	[ContextMenu("CreatePopup")]
+	public void sampleRequest() {
+		createAskingPopup ();
 	}
 		
 	public bool ReviewRequest () {
@@ -19,20 +26,25 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 		if (CheckIsOkToAskReview(playCount, _gameManager._userData.denied_flg))
 		{ // 規定回の倍数ならレビュー依頼してみる
-			// ラベル設定
-			// 選択肢とそこで呼ばれるアクションの設定
-			// メソッドをコールするGameObjectを設定
-			string title = "";
-			string content = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
-
-			List<CustomButton> buttons = new List<CustomButton> ();
-			buttons.Add (new CustomButton ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
-			buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "NoThanks"));
-
-			// YES NO ダイアログ
-			//「楽しんでいただけていますか？」とのダイアログを出す。
+			createAskingPopup();
 		}
 		return false;
+	}
+
+	void createAskingPopup() {
+		// ラベル設定
+		// 選択肢とそこで呼ばれるアクションの設定
+		// メソッドをコールするGameObjectを設定
+		string title = "";
+		string content = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
+
+		List<CustomButton> buttons = new List<CustomButton> ();
+		buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "NoThanks"));
+		buttons.Add (new CustomButton ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
+
+		// YES NO ダイアログ
+		//「楽しんでいただけていますか？」とのダイアログを出す。
+		_popUpCtrl.Open(title, content, buttons, this.gameObject);
 	}
 
 	void NoThanks() {
@@ -77,6 +89,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		buttons.Add (new CustomButton ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
 
 		// Dialog出力
+		_popUpCtrl.Open(title, content, buttons, this.gameObject);
 	}
 
 	// 開く
@@ -116,6 +129,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 		// YES NO ダイアログ
 		// お問合せ
+		_popUpCtrl.Open(title, content, buttons, this.gameObject);
 	}
 }
 public class CustomButton {
