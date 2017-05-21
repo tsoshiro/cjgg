@@ -15,7 +15,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	ReviewRequestCtrl _reviewRequestCtrl;
 
 	// Sound Manager
-	AudioManager _audioManager;
+	public AudioManager _audioManager;
 
 	// Label Settings
 	public Text _labelAnswer;
@@ -511,6 +511,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			return;
 
 		if (_inputManager.isLastUpTap ()) {
+			_audioManager.play (Const.SE_BUTTON);
 			this.gameObject.SendMessage ("action" + pGameObject.name);
 		}
 	}
@@ -662,11 +663,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 		
 	void Transition(GameObject pFrom, GameObject pTo) {
+		_audioManager.play (Const.SE_PAGE_TRANS);
 		_screenCtrl.Transition (pFrom, pTo);
 		_UI_now = pTo;
 	}
 
 	void TransitionBackwards(GameObject pFrom, GameObject pTo) {
+		_audioManager.play (Const.SE_PAGE_TRANS_BW);
 		_screenCtrl.TransitionBackwards (pFrom, pTo);
 		_UI_now = pTo;
 	}

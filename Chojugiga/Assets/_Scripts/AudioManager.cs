@@ -8,17 +8,18 @@ public class AudioManager : MonoBehaviour {
 
 	public AudioSource bgmSource;
 	public AudioClip [] bgm;
-	AudioSource _audio;
+	AudioSource _audio; // for SampleSounds
 	public bool isMute;
 
 	//DEBUG
 	public List<AudioClip []> sampleSounds = new List<AudioClip []>();
 
-	public AudioClip [] SE_GOOD;
-	public AudioClip [] SE_BAD;
-	public AudioClip [] SE_UP;
-	public AudioClip [] SE_NO;
 	public AudioClip [] SE_BUTTON;
+	public AudioClip [] SE_PAGE_TRANS;
+	public AudioClip [] SE_CORRECT_CHIME;
+	public AudioClip [] SE_WRONG_CHIME;
+	public AudioClip [] SE_RESULT_FX;
+	public AudioClip [] SE_BEST;
 
 	public List<int> sampleSoundsDirector;
 
@@ -27,7 +28,7 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void Init() {
-		_audio = GetComponent<AudioSource>();
+		_audio = this.GetComponentInChildren<AudioSource>();
 
 		for (int i = 0; i < sounds.Length; i++) {
 			AudioSource aSource = this.gameObject.AddComponent<AudioSource>();
@@ -68,11 +69,11 @@ public class AudioManager : MonoBehaviour {
 
 	#region SAMPLE
 	void setSampleSounds() {
-		sampleSounds.Add (SE_GOOD);
-		sampleSounds.Add (SE_BAD);
-		sampleSounds.Add (SE_UP);
-		sampleSounds.Add (SE_NO);
-		sampleSounds.Add (SE_BUTTON);
+//		sampleSounds.Add (SE_GOOD);
+//		sampleSounds.Add (SE_BAD);
+//		sampleSounds.Add (SE_UP);
+//		sampleSounds.Add (SE_NO);
+//		sampleSounds.Add (SE_BUTTON);
 	}
 
 	public void _play (int id) { // id = sampleSounds[i]

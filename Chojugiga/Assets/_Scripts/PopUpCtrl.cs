@@ -184,6 +184,7 @@ public class PopUpCtrl : MonoBehaviour {
 			return;
 
 		if (_inputManager.isLastUpTap ()) {
+			GameManager.GetInstance()._audioManager.play (Const.SE_PAGE_TRANS);
 			target.SendMessage (pGameObject.name);
 		}
 	}

@@ -61,6 +61,17 @@ public class Const {
 
 	#region SOUND
 	public static float BGM_VOLUME = 1.0f;
+
+	public static int SE_BUTTON 		= 0;
+	public static int SE_PAGE_TRANS 	= 1;
+	public static int SE_CORRECT_CHIME 	= 2;
+	public static int SE_WRONG_CHIME 	= 3;
+	public static int SE_RESULT_FX 		= 4;
+	public static int SE_BEST		 	= 5;
+	public static int SE_PAGE_TRANS_BW	= 6;
+
+
+
 	#endregion
 
 	#region COLOR
@@ -88,8 +99,10 @@ public class Const {
 	#endregion
 
 	#region REVIEW
-	public static int INTERVAL_REVIEW_REQUEST = 3;
+	public static int INTERVAL_REVIEW_REQUEST = 3; // 本来は10
 	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
 	#endregion
+
+
 
 }
