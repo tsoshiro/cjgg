@@ -6,6 +6,7 @@ using NUnit.Framework;
 public class Test {
 	GachaCtrl gachaCtrl;
 	DataCtrl _dataCtrl;
+	GameManager _gameManager;
 
 	[SetUp]
 	public void init() {
@@ -141,5 +142,34 @@ public class Test {
 		} else {
 			return _dataCtrl.getTargetLinear (pScore, pList);
 		}
+	}
+
+	[Test]
+	public void reviewRequestTest() {
+		GameObject obj = new GameObject ();
+		obj.AddComponent<ReviewRequestCtrl> ();
+		ReviewRequestCtrl rrc = obj.GetComponent<ReviewRequestCtrl> ();
+
+		bool flg = rrc.checkIsToBeAsked (20, 0, 0);
+		Assert.IsTrue (flg);
+
+		flg = rrc.checkIsToBeAsked (40, 0, 0);
+		Assert.IsTrue (flg);
+
+		flg = rrc.checkIsToBeAsked (42, 0, 0);
+		Assert.IsFalse (flg);
+
+		flg = rrc.checkIsToBeAsked (40, 1, 0);
+		Assert.IsFalse (flg);
+
+		flg = rrc.checkIsToBeAsked (100, 0, 1);
+		Assert.IsTrue (flg);
+
+		flg = rrc.checkIsToBeAsked (200, 0, 1);
+		Assert.IsTrue (flg);
+
+		flg = rrc.checkIsToBeAsked (40, 1, 1);
+		Assert.IsFalse (flg);
+
 	}
 }
