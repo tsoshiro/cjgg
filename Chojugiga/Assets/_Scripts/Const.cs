@@ -87,9 +87,9 @@ public class Const {
 	}
 	#endregion
 
-	#region ADS
-	public static int INTERVAL_REVIEW_REQUEST = 5;
-	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 20;
+	#region REVIEW
+	public static int INTERVAL_REVIEW_REQUEST = 3;
+	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
 	#endregion
 
 }

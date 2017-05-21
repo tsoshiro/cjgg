@@ -12,32 +12,46 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void Update() {
 		if (Input.GetKeyDown (KeyCode.A)) {
-			createAskingPopup ();
+			createAskingPopUp ();
 		}
 	}
 
 	[ContextMenu("CreatePopup")]
 	public void sampleRequest() {
-		createAskingPopup ();
+		createAskingPopUp ();
 	}
 		
-	public bool ReviewRequest () {
+
+	// プレイ回数から楽しんでいるかポップアップを出すか判定する
+	public bool checkIsToBeAsked(int pPlayCount, int pReviewFlg, int pDeniedFlg) {
 		// プレイ回数がx回以上のユーザーに対して
-		int playCount = _gameManager._userData.play_count;
-		if (CheckIsPlayCountUnderOrAlreadyReviewed (playCount,
-													_gameManager._userData.review_flg))
+		int playCount = pPlayCount;
+		if (CheckIsPlayCountUnderOrAlreadyReviewed (playCount, pReviewFlg))
 		{
 			return false; // 何もしない
 		}
 
-		if (CheckIsOkToAskReview(playCount, _gameManager._userData.denied_flg))
+		if (CheckIsOkToAskReview(playCount, pDeniedFlg))
 		{ // 規定回の倍数ならレビュー依頼してみる
-			createAskingPopup();
+			return true;
 		}
-		return false;
+		return false;	
 	}
 
-	void createAskingPopup() {
+	/// <summary>
+	/// プレイ回数によって楽しんでいるかポップアップを表示
+	/// </summary>
+	/// <returns><c>true</c>, if is to be asked was checked, <c>false</c> otherwise.</returns>
+	public void checkIsToBeAsked () {
+		UserData ud = _gameManager._userData;
+		if (checkIsToBeAsked (ud.play_count, ud.review_flg, ud.denied_flg))
+			createAskingPopUp ();
+	}
+
+	/// <summary>
+	/// 楽しんでいるかポップアップを表示
+	/// </summary>
+	void createAskingPopUp() {
 		// ラベル設定
 		// 選択肢とそこで呼ばれるアクションの設定
 		// メソッドをコールするGameObjectを設定
@@ -45,7 +59,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		string content = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
 
 		List<CustomButton> buttons = new List<CustomButton> ();
-		buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "NoThanks"));
+		buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "AskForMessage"));
 		buttons.Add (new CustomButton ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
 
 		// YES NO ダイアログ
@@ -53,9 +67,12 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_popUpCtrl.Open(title, content, buttons, this.gameObject);
 	}
 
-	void NoThanks() {
+	/// <summary>
+	/// 楽しんでいないとの回答に対し、意見をもらうポップアップを表示する
+	/// </summary>
+	void AskForMessage() {
 		if (_gameManager._userData.message_flg == 0) {
-			AskForMessage ();
+			createAskForMessagePopUp ();
 		}
 	}
 
@@ -85,6 +102,13 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	}
 
 	void AskForReview () {
+		createAskForReviewPopUp ();
+	}
+
+	/// <summary>
+	/// レビュー依頼ポップアップを表示
+	/// </summary>
+	void createAskForReviewPopUp() {
 		string title = "ありがとうございます！";
 		string content = "よかったら\n☆5レビュー、\nお願いします。";
 		string image = "";
@@ -125,7 +149,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_popUpCtrl.Close();
 	}
 
-	void AskForMessage () {
+	void createAskForMessagePopUp () {
 		string title = "";
 		string content = "よろしければ\nご意見・ご要望、\nお待ちしています。";
 

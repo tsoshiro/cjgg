@@ -179,7 +179,7 @@ public class PopUpCtrl : MonoBehaviour {
 	#region ActionButton
 	GameObject target;
 	void actionCallbackBtn(GameObject pGameObject) {
-		Debug.Log ("actionCallbackBtn:" + pGameObject.name);
+		DebugLogger.Log ("actionCallbackBtn:" + pGameObject.name);
 		if (_inputManager.disabled) // input無効になっているかどうかチェック
 			return;
 
@@ -190,7 +190,7 @@ public class PopUpCtrl : MonoBehaviour {
 
 	// Receivers
 	public void actionBtn(GameObject pGameObject) {
-		Debug.Log ("actionBtn:" + pGameObject.name);
+		DebugLogger.Log ("actionBtn:" + pGameObject.name);
 		if (_inputManager.disabled) // input無効になっているかどうかチェック
 			return;
 
@@ -227,8 +227,4 @@ public class PopUpCtrl : MonoBehaviour {
 		this.gameObject.transform.localScale = defaultScale;
 	}
 
-	#region DATA
-
-
-	#endregion
 }

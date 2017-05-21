@@ -12,6 +12,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	ScreenCtrl _screenCtrl;
 	CommentCtrl _commentCtrl;
 	ScreenShotCtrl _screenShotCtrl;
+	ReviewRequestCtrl _reviewRequestCtrl;
 
 	// Sound Manager
 	AudioManager _audioManager;
@@ -112,6 +113,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		// SceneCtrl初期化
 		_resultSceneCtrl = _UI_group_result.GetComponent<ResultSceneCtrl>();
 		_objWrongReason = _labelWrongReason.transform.parent.gameObject;
+
+		// Review初期化
+		_reviewRequestCtrl = this.gameObject.GetComponent<ReviewRequestCtrl>();
 
 		// Sound初期化
 		_audioManager = this.transform.GetComponentInChildren<AudioManager>();
@@ -286,6 +290,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		// リザルト画面に遷移
 		Transition (_UI_now, _UI_group_result);
+		_reviewRequestCtrl.checkIsToBeAsked ();
 	}
 		
 	/// <summary>
