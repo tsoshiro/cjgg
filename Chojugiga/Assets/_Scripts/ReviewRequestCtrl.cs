@@ -10,6 +10,12 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_gameManager = GameManager.GetInstance ();
 	}
 
+	void Update() {
+		if (Input.GetKeyDown (KeyCode.A)) {
+			createAskingPopup ();
+		}
+	}
+
 	[ContextMenu("CreatePopup")]
 	public void sampleRequest() {
 		createAskingPopup ();

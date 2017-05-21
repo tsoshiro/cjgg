@@ -16,9 +16,15 @@ public class PopUpCtrl : MonoBehaviour {
 	public GameObject _buttonPrefab;
 	public List<Sprite> _buttonImages;
 
-	float X_VALUE = 160f;
-	float Y_VALUE = 80f;
-	float RESIZE_RATE = 0.75f;
+	public iTween.EaseType _easeType = iTween.EaseType.easeInOutBack;
+	public float ANIMATION_TIME = 0.22f;
+
+	float X_VALUE = 150f;
+	float Y_VALUE = 120f;
+	float RESIZE_RATE = 0.70f;
+	float RESIZE_FONT_RATE = 0.6f;
+	float BASE_Y_POS = -200f;
+
 
 	List<GameObject> _buttons = new List<GameObject>();
 
@@ -63,8 +69,9 @@ public class PopUpCtrl : MonoBehaviour {
 		List<Vector3> result = new List<Vector3> ();
 
 		// 行数から開始Y座標が決まる
-		int rowCount = (pCount / 2) + 1;
+		int rowCount = (pCount+1) / 2;
 		float yStartPos = rowCount * Y_VALUE / 2;
+		Debug.Log ("yStartPos:" + yStartPos);
 
 		// 座標設定用変数
 		float x, y;
@@ -88,7 +95,10 @@ public class PopUpCtrl : MonoBehaviour {
 
 				x = (isLeft) ? - X_VALUE : X_VALUE;
 			}
+
+			// startPosから、Y_VALUEの行数分下に
 			y = yStartPos - Y_VALUE * row;
+
 			pos = new Vector3(x, y, 0);
 			result.Add(pos);
 		}
@@ -107,12 +117,12 @@ public class PopUpCtrl : MonoBehaviour {
 
 		// 文字サイズ初期設定
 		Text targetText = obj.GetComponentInChildren<Text> ();
-		targetText.fontSize = Mathf.RoundToInt((float)targetText.fontSize * RESIZE_RATE);
+		targetText.fontSize = Mathf.RoundToInt((float)targetText.fontSize * RESIZE_FONT_RATE);
 
 		// オブジェクトサイズ調整・初期設定
 		obj.transform.SetParent(this.transform);
 		RectTransform rc = obj.GetComponent<RectTransform> ();
-		rc.sizeDelta = rc.sizeDelta * RESIZE_RATE;
+		rc.sizeDelta = new Vector2(rc.sizeDelta.x * RESIZE_RATE, rc.sizeDelta.y);
 		obj.transform.localScale = Vector3.one;
 
 		return obj;
@@ -135,7 +145,7 @@ public class PopUpCtrl : MonoBehaviour {
 		setButtonImage (obj, pButton._buttonImage);
 
 		// 位置調整
-		obj.transform.localPosition = new Vector3 (0, -100, 0); // BasePos設定
+		obj.transform.localPosition = new Vector3 (0, BASE_Y_POS, 0); // BasePos設定
 		obj.transform.localPosition += pPosition;
 
 		if (!_buttons.Contains(obj)) // 含まない場合は、追加する
@@ -198,17 +208,14 @@ public class PopUpCtrl : MonoBehaviour {
 		CloseAnimation ();
 	}
 
-	float ANIMATION_TIME = 0.1f;
-
 	void OpenAnimation() {
 		this.gameObject.SetActive (true);
-
-		iTween.ScaleTo ( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "scale", defaultScale));
+		iTween.ScaleTo ( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "scale", defaultScale, "easetype", _easeType));
 	}
 
 	void CloseAnimation() {
-		iTween.ScaleTo( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "scale", Vector3.zero));
-		Invoke ("CloseAnimationOnComplete", ANIMATION_TIME * 3);
+		iTween.ScaleTo( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "scale", Vector3.zero, "easetype", _easeType));
+		iTween.MoveTo ( this.gameObject, iTween.Hash("time", ANIMATION_TIME, "oncomplete", "CloseAnimationOnComplete", "oncompletetarget", this.gameObject));
 	}
 
 	void CloseAnimationOnComplete() {
