@@ -32,17 +32,7 @@ public class PopUpCtrl : MonoBehaviour {
 		this.gameObject.SetActive (false);
 	}
 
-	void resetButtons() {
-		if (_buttons.Count <= 0)
-			return;
-		for (int i = 0; i < _buttons.Count; i++) {
-			Destroy (_buttons [i]);
-		}
-	}
-
 	public void Open(string pTitle, string pContent, List<CustomButton> pButtonList, GameObject pTargetObject) {
-		resetButtons ();
-
 		_title.text = pTitle;
 		_content.text = pContent;
 
@@ -51,9 +41,19 @@ public class PopUpCtrl : MonoBehaviour {
 		List<Vector3> posList = getPositions (pButtonList.Count);
 
 		// Buttonの配置
-		_buttons = new List<GameObject>();
 		for (int i = 0; i < pButtonList.Count; i++) {
-			setButtonSetting (pButtonList [i], posList[i]);
+			bool isButtonCreated = (_buttons != null) ? (i <= _buttons.Count - 1) : true;
+			// ボタンが生成済みなら流用、そうでないなら新規生成
+			GameObject obj = (isButtonCreated) ? _buttons [i] : InstantiateButton ();
+			setButtonSetting (obj, pButtonList [i], posList [i]);
+		}
+
+		// 使うボタンを活性、使わないボタンを非活性にする
+		// {0 1 2 3} 4 5 ← 4と5は使わないとする
+		// _buttons.Count = 6 : pButtonList.Count = 4
+		for (int i = 0; i < _buttons.Count; i++) {
+			bool isUsedThisTime = (i < pButtonList.Count);
+			_buttons [i].SetActive (isUsedThisTime); // 使うなら活性、使わないなら非活性
 		}
 
 		OpenAnimation ();
@@ -96,36 +96,50 @@ public class PopUpCtrl : MonoBehaviour {
 		return result;
 	}
 
-	void setButtonSetting(CustomButton pButton, Vector3 pPosition) {
-		GameObject obj = (GameObject)Instantiate(_buttonPrefab);
-		obj.name = pButton._method;
+	GameObject InstantiateButton() {
+		GameObject obj = (GameObject)Instantiate (_buttonPrefab);
 
-		// ボタンにコールバックを仕込む
-		Button btn = obj.GetComponent<Button> ();
-		btn.onClick.AddListener (()=> actionCallbackBtn(obj));
-
+		// Image設定
 		Image img = obj.GetComponent<Image> ();
 		img.SetNativeSize ();
 		img.preserveAspect = false;
 
-		// 文字列更新・サイズ更新
+
+		// 文字サイズ初期設定
 		Text targetText = obj.GetComponentInChildren<Text> ();
-		targetText.text = pButton._text;
 		targetText.fontSize = Mathf.RoundToInt((float)targetText.fontSize * RESIZE_RATE);
 
-		setButtonImage (obj, pButton._buttonImage);
-
-		// 位置調整
+		// オブジェクトサイズ調整・初期設定
 		obj.transform.SetParent(this.transform);
-		obj.transform.localPosition = new Vector3 (0, -100, 0); // BasePos設定
-		obj.transform.localPosition += pPosition;
-
-		// サイズ調整
 		RectTransform rc = obj.GetComponent<RectTransform> ();
 		rc.sizeDelta = rc.sizeDelta * RESIZE_RATE;
 		obj.transform.localScale = Vector3.one;
 
-		_buttons.Add (obj);
+		return obj;
+	}
+
+	void setButtonSetting(GameObject pButtonObject, CustomButton pButton, Vector3 pPosition) {
+		GameObject obj = pButtonObject;
+		obj.name = pButton._method;
+
+		// ボタンにコールバックを仕込む
+		Button btn = obj.GetComponent<Button> ();
+		btn.onClick.RemoveAllListeners ();
+		btn.onClick.AddListener (()=> actionCallbackBtn(obj));
+
+
+		// 文字列更新
+		Text targetText = obj.GetComponentInChildren<Text> ();
+		targetText.text = pButton._text;
+
+		setButtonImage (obj, pButton._buttonImage);
+
+		// 位置調整
+		obj.transform.localPosition = new Vector3 (0, -100, 0); // BasePos設定
+		obj.transform.localPosition += pPosition;
+
+		if (!_buttons.Contains(obj)) // 含まない場合は、追加する
+			_buttons.Add (obj);
 	}
 
 	public void Open(string pTitle, string pContent = "") {
