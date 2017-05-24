@@ -123,6 +123,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		state = GameState.TITLE;
 		_UI_now = _UI_group_title;
+		_audioManager.playBGM ();
 	}
 		
 	// Update is called once per frame
