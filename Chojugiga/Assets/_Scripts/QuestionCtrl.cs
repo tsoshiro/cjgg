@@ -180,7 +180,7 @@ public class QuestionCtrl : MonoBehaviour {
 		return q;
 	}
 
-	int[] images_max_count = {20,20,10}; // 0:frog 1:rabbit 2:others
+	int[] images_max_count = {30,30,15}; // 0:frog 1:rabbit 2:others
 
 	List<List<int>> list_of_images_list; // 0:frog 1:rabbit 2:others
 	List<int> frog_images_list;
@@ -238,10 +238,10 @@ public class QuestionCtrl : MonoBehaviour {
 	// テスト用
 	Const.AnimalType getAnimalType(int pId) {
 		int n = Random.Range(0,100);
-		if (n < 40) {
+		if (n < 50) {
 			return Const.AnimalType.FROG;
 		}
-		if (n < 80) {
+		if (n < 90) {
 			return Const.AnimalType.RABBIT;
 		}
 		return Const.AnimalType.OTHERS;
