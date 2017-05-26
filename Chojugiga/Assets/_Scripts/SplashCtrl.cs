@@ -74,5 +74,7 @@ public class SplashCtrl : MonoBehaviour {
 
 		// Splashシーンを非アクティブ化
 		this.gameObject.SetActive (false);
+
+		GameManager.GetInstance ()._adCtrl.ShowBanner ();
 	}
 }

@@ -17,6 +17,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	// Sound Manager
 	public AudioManager _audioManager;
 
+	// Ad
+	public AdvertisementCtrl _adCtrl;
+
 	// Label Settings
 	public Text _labelAnswer;
 	public Text _labelScore;
@@ -121,9 +124,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_audioManager = this.transform.GetComponentInChildren<AudioManager>();
 		setSound (false); // MUTE ONで初期化
 
+		// Ad初期化
+		_adCtrl = this.transform.GetComponentInChildren<AdvertisementCtrl> ();
+
 		state = GameState.TITLE;
 		_UI_now = _UI_group_title;
-		_audioManager.playBGM ();
 	}
 		
 	// Update is called once per frame
@@ -291,6 +296,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 		// リザルト画面に遷移
 		Transition (_UI_now, _UI_group_result);
+		// インタースティシャル広告
+		_adCtrl.checkInterstitial ();
+		// レビュー依頼
 		_reviewRequestCtrl.checkIsToBeAsked ();
 	}
 		
@@ -701,11 +709,16 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_imagePanel.transform.localPosition = pos;
 	}
 
+	/// <summary>
+	/// ポーズから復帰時
+	/// </summary>
+	/// <param name="pauseStatus">If set to <c>true</c> pause status.</param>
 	void OnApplicationPause (bool pauseStatus)
 	{
 		if (pauseStatus) {
 			DebugLogger.Log("applicationWillResignActive or onPause");	
 		} else {
+			_adCtrl.ShowInters(Const.AD_INTER_NUM_BG);
 			if (state == GameState.PLAYING)
 				Pause ();
 		}

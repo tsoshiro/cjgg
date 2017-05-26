@@ -71,9 +71,10 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	/// 楽しんでいないとの回答に対し、意見をもらうポップアップを表示する
 	/// </summary>
 	void AskForMessage() {
-		if (_gameManager._userData.message_flg == 0) {
+		if (_gameManager._userData.message_flg == 0)
 			createAskForMessagePopUp ();
-		}
+		else
+			Close ();
 	}
 
 	public bool CheckIsPlayCountUnderOrAlreadyReviewed (int playCount, int reviewDoneFlg)
@@ -111,7 +112,6 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	void createAskForReviewPopUp() {
 		string title = "ありがとうございます！";
 		string content = "よかったら\n☆5レビュー、\nお願いします。";
-		string image = "";
 
 		List<CustomButton> buttons = new List<CustomButton> ();
 		buttons.Add (new CustomButton ("レビューする", (int)Const.ButtonType.POSITIVE, "OpenURL"));

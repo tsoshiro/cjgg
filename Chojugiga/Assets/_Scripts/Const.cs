@@ -98,6 +98,13 @@ public class Const {
 	}
 	#endregion
 
+	#region AD
+	public static int AD_INTER_NUM_END = 0;
+	public static int AD_INTER_NUM_BG 	= 1;
+
+	public static int AD_INTERVAL_INTER = 5;
+	#endregion
+
 	#region REVIEW
 	public static int INTERVAL_REVIEW_REQUEST = 3; // 本来は10
 	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
