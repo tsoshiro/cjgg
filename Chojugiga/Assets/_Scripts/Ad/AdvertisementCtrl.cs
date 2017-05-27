@@ -18,8 +18,8 @@ public class AdvertisementCtrl : MonoBehaviour {
 		_adManager.ShowBanner ();	
 	}
 
-	public void ShowInters() {
-		_adManager.showInterstitial ();
+	public void ShowInters(int pIndex = 0) {
+		_adManager.showInterstitial (pIndex);
 	}
 
 	// インタースティシャルを表示するかどうか確認し、表示

@@ -35,7 +35,7 @@ public class Const {
 	public static string LBL_SCORE = "スコア";
 	public static string LBL_BEST = "ベスト";
 	public static string LBL_TIME = "タイム";
-	public static string LBL_COIN = "コイン";
+	public static string LBL_COIN = "トータル";
 
 	public static string LBL_START = "スタート";
 	public static string LBL_CORRECT 	= "正解！";
@@ -60,15 +60,16 @@ public class Const {
 	#endregion
 
 	#region SOUND
-	public static float BGM_VOLUME = 1.0f;
+	public static float BGM_VOLUME = .32f;
 
-	public static int SE_BUTTON 		= 0;
-	public static int SE_PAGE_TRANS 	= 1;
-	public static int SE_CORRECT_CHIME 	= 2;
-	public static int SE_WRONG_CHIME 	= 3;
-	public static int SE_RESULT_FX 		= 4;
-	public static int SE_BEST		 	= 5;
-	public static int SE_PAGE_TRANS_BW	= 6;
+	public static int SE_BUTTON 		= 0; // ボタン押下
+	public static int SE_PAGE_TRANS 	= 1; // 進む
+	public static int SE_CORRECT_CHIME 	= 2; // 正解した時
+	public static int SE_WRONG_CHIME 	= 3; // 間違えた時
+	public static int SE_RESULT_FX 		= 4; // 結果画面遷移時
+	public static int SE_BEST		 	= 5; // ベストスコア取得時ジングル
+	public static int SE_PAGE_TRANS_BW	= 6; // 戻る
+	public static int SE_START			= 7; // スタート時
 
 
 

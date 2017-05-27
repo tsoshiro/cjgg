@@ -211,6 +211,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			yield return new WaitForSeconds (0.5f);
 		}
 
+		// カウントダウン完了・ゲーム開始
+		_audioManager.play(Const.SE_START);
+
 		state = GameState.PLAYING;
 		setLabelAnswer (Const.LBL_START);
 		UpdateImage ();
@@ -295,7 +298,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		yield return new WaitForSeconds(waitTime);
 
 		// リザルト画面に遷移
-		Transition (_UI_now, _UI_group_result);
+		Transition (_UI_now, _UI_group_result, false);
+		// 効果音鳴らす
+		if (isBest)
+			_audioManager.play (Const.SE_BEST);
+		else
+			_audioManager.play (Const.SE_RESULT_FX);
+
 		// インタースティシャル広告
 		_adCtrl.checkInterstitial ();
 		// レビュー依頼
@@ -389,6 +398,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		DebugLogger.Log ("getAnswer:" + _questionCtrl.getAnswer () + " myAnswer:" + pInputAnswer);
 
 		if (_questionCtrl.getAnswer () == pInputAnswer) {
+			_audioManager.play (Const.SE_CORRECT_CHIME);
+
 			answer = Const.LBL_CORRECT;
 			addScore (ADD_SCORE);
 
@@ -396,6 +407,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 			setLabelAnswer (answer);
 			UpdateImage ();
 		} else {
+			_audioManager.play (Const.SE_WRONG_CHIME);
+
 			answer = Const.LBL_WRONG;
 			wrongAnswer (_questionCtrl.getAnswer());
 
@@ -519,8 +532,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		if (_inputManager.disabled) // input無効になっているかどうかチェック
 			return;
 
-		if (_inputManager.isLastUpTap ()) {
-			_audioManager.play (Const.SE_BUTTON);
+		if (_inputManager.isLastUpTap ()) {			
 			this.gameObject.SendMessage ("action" + pGameObject.name);
 		}
 	}
@@ -671,14 +683,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_imagePanel.SetActive (false);
 	}
 		
-	void Transition(GameObject pFrom, GameObject pTo) {
-		_audioManager.play (Const.SE_PAGE_TRANS);
+	void Transition(GameObject pFrom, GameObject pTo, bool pIsSeOn = true) {
+		if (pIsSeOn)
+			_audioManager.play (Const.SE_PAGE_TRANS);
+		
 		_screenCtrl.Transition (pFrom, pTo);
 		_UI_now = pTo;
 	}
 
-	void TransitionBackwards(GameObject pFrom, GameObject pTo) {
-		_audioManager.play (Const.SE_PAGE_TRANS_BW);
+	void TransitionBackwards(GameObject pFrom, GameObject pTo, bool pIsSeOn = true) {
+		if (pIsSeOn)
+			_audioManager.play (Const.SE_PAGE_TRANS_BW);
+		
 		_screenCtrl.TransitionBackwards (pFrom, pTo);
 		_UI_now = pTo;
 	}
