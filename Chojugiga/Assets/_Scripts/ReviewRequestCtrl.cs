@@ -143,7 +143,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_gameManager._userData.review_flg = 1;
 		_gameManager._userData.save ();
 
-		Application.OpenURL (Const.APP_URL);
+		Application.OpenURL (Const.APP_STORE_REVIEW_URL);
 	}
 
 	void OpenDevURL() {

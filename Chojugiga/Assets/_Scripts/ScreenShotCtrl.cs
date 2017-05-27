@@ -59,11 +59,11 @@ public class ScreenShotCtrl : MonoBehaviour {
 		GameManager.GetInstance()._inputManager.disabled = false;
 		if (pWithImage) {
 			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
-				Const.APP_URL, 
+				Const.APP_STORE_URL_BITLY, 
 				Application.persistentDataPath + "/" + Const.SC_NAME);	
 		} else {
 			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
-				Const.APP_URL);				
+				Const.APP_STORE_URL_BITLY);
 		}
 	}
 

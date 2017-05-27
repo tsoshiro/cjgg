@@ -37,7 +37,7 @@ public class ScreenShotTest : MonoBehaviour {
 
 	void actionButtonShare() {
 		SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
-			Const.APP_URL, 
+			Const.APP_STORE_URL_BITLY, 
 			Application.persistentDataPath + "/" + fileName);
 	}
 

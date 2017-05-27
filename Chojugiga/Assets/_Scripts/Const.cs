@@ -91,8 +91,22 @@ public class Const {
 	public static string SHARE_MESSAGE_SCORE_01 = "脳トレ鳥獣戯画で";
 	public static string SHARE_MESSAGE_SCORE_02 = "点取ったよ";
 
-	public static string APP_URL 		= "http://bit.ly/1VBDVpt"; // TEST
+	public const string APP_ID = "1241697757";
+	public const string APP_STORE_URL = 
+		"https://itunes.apple.com/us/app/id"
+		+APP_ID
+		+"?l=ja&ls=1&mt=8";
+	public const string APP_STORE_URL_BITLY = "http://apple.co/2qZGB76";
+
+	public const string APP_STORE_REVIEW_URL =
+		"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id="
+		+APP_ID
+		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
+
 	public static string DEV_URL 		= "http://bit.ly/2rsY7yY"; // FIXED
+	public static string SUPPORT_URL	= "http://bit.ly/2i4YJtp";
+	public static string FEATURE_URL	= "http://bit.ly/2qqwyFp"; // ダ鳥獣戯画サイト
+	public static string PIXELBEAT_URL	= "http://bit.ly/2qnjkNB"; // pixelbeat
 
 	public static string MSG_ASKING_POPUP = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
 	public static string MSG_ASKING_POPUP_ANS_YES 	= "はい";
@@ -127,7 +141,7 @@ public class Const {
 	#endregion
 
 	#region REVIEW
-	public static int INTERVAL_REVIEW_REQUEST = 3; // 本来は10
+	public static int INTERVAL_REVIEW_REQUEST = 10;
 	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
 	#endregion
 
