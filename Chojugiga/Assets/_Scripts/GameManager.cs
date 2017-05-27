@@ -51,7 +51,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	float WAIT_TIME_TIME_UP = 0.6f;
 
 	// 画像表示位置
-	float X = 153f;
+	public float X = 143f;
+
 
 	// ゲーム開始時のカウントダウン
 	int START_COUNT_DOWN = 3;
