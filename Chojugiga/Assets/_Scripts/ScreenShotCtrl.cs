@@ -30,19 +30,7 @@ public class ScreenShotCtrl : MonoBehaviour {
 		// シェアコルーチン開始
 		StartCoroutine (shareCoroutine (pMessage));
 	}
-
-	void share(string pMessage, bool pWithImage) {
-		GameManager.GetInstance()._inputManager.disabled = false;
-		if (pWithImage) {
-			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
-				Const.APP_URL, 
-				Application.persistentDataPath + "/" + Const.SC_NAME);	
-		} else {
-			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
-				Const.APP_URL);				
-		}
-	}
-
+		
 	IEnumerator shareCoroutine(string pMessage) {
 		// 操作できなくする
 		GameManager.GetInstance()._inputManager.disabled = true;
@@ -66,6 +54,19 @@ public class ScreenShotCtrl : MonoBehaviour {
 		isScreenShotSaved = false;
 		isScreenShotSaveFailed = false;
 	}
+
+	void share(string pMessage, bool pWithImage) {
+		GameManager.GetInstance()._inputManager.disabled = false;
+		if (pWithImage) {
+			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
+				Const.APP_URL, 
+				Application.persistentDataPath + "/" + Const.SC_NAME);	
+		} else {
+			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
+				Const.APP_URL);				
+		}
+	}
+
 
 	float TIME_OUT = 2f;
 	public IEnumerator waitForSaveCoroutine() {
