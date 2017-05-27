@@ -14,6 +14,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	ScreenShotCtrl _screenShotCtrl;
 	ReviewRequestCtrl _reviewRequestCtrl;
 
+	public AnalyticsManager _analyticsManager;
+
 	// Sound Manager
 	public AudioManager _audioManager;
 
@@ -47,11 +49,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	float time_passed = 0f;
 
 	// ゲーム終了時のリザルト画面に遷移するまでの待ち時間
-	float WAIT_TIME_WRONG_ANSWER = 1.5f;
-	float WAIT_TIME_TIME_UP = 0.6f;
+	float WAIT_TIME_WRONG_ANSWER = 2f;
+	float WAIT_TIME_TIME_UP = 2f;
 
 	// 画像表示位置
-	public float X = 143f;
+	float X = 143f;
 
 
 	// ゲーム開始時のカウントダウン
@@ -89,6 +91,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	void Awake() {
 		InitData ();
 		InitUserData ();
+
+		_analyticsManager = new AnalyticsManager ();
 	}
 
 	void InitData() {
@@ -333,6 +337,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 		_resultSceneCtrl.setResult(result);
 
 		// 画像差し替え(余裕があれば)
+
+		// UnityAnalytics
+		_analyticsManager.SendCounterEvent(Const.UA_SCORE, pScore);
+		_analyticsManager.SendValue (Const.UA_ONE_PLAY_TIME, time_passed);
 	}
 		
 	void guideToReplay() {
@@ -572,7 +580,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	/// 結果を共有
 	/// </summary>
 	public void ShareResult() {
-		_screenShotCtrl.actionShare (true);
+		string message = Const.SHARE_MESSAGE_SCORE_01 + score + Const.SHARE_MESSAGE_SCORE_02;
+
+		_screenShotCtrl.actionShare (message,true);
+		_analyticsManager.SendCounterEvent (Const.UA_PRESSED_SHARE_BTN_RESULT);
 	}
 
 	// Private Methods
@@ -596,7 +607,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	/// </summary>
 	void actionButtonShare() {
 		if (state == GameState.TITLE) {
-			_screenShotCtrl.actionShare (true);
+			string message = Const.SHARE_MESSAGE;
+			_screenShotCtrl.actionShare (message, true);
+			_analyticsManager.SendCounterEvent (Const.UA_PRESSED_SHARE_BTN_TITLE, 1);
 		}
 	}
 

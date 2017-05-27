@@ -10,12 +10,6 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_gameManager = GameManager.GetInstance ();
 	}
 
-	void Update() {
-		if (Input.GetKeyDown (KeyCode.A)) {
-			createAskingPopUp ();
-		}
-	}
-
 	[ContextMenu("CreatePopup")]
 	public void sampleRequest() {
 		createAskingPopUp ();
@@ -52,15 +46,23 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	/// 楽しんでいるかポップアップを表示
 	/// </summary>
 	void createAskingPopUp() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_ASKING_POP_UP);
+
 		// ラベル設定
 		// 選択肢とそこで呼ばれるアクションの設定
 		// メソッドをコールするGameObjectを設定
 		string title = "";
-		string content = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
+		string content = Const.MSG_ASKING_POPUP;
 
 		List<CustomButton> buttons = new List<CustomButton> ();
-		buttons.Add (new CustomButton ("そんなに...", (int)Const.ButtonType.DEFAULT, "AskForMessage"));
-		buttons.Add (new CustomButton ("はい", (int)Const.ButtonType.POSITIVE, "AskForReview"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_POPUP_ANS_NO,
+			(int)Const.ButtonType.DEFAULT,
+			"AskForMessage"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_POPUP_ANS_YES,
+			(int)Const.ButtonType.POSITIVE, 
+			"AskForReview"));
 
 		// YES NO ダイアログ
 		//「楽しんでいただけていますか？」とのダイアログを出す。
@@ -71,6 +73,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	/// 楽しんでいないとの回答に対し、意見をもらうポップアップを表示する
 	/// </summary>
 	void AskForMessage() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_ENJOYING);
+
 		if (_gameManager._userData.message_flg == 0)
 			createAskForMessagePopUp ();
 		else
@@ -103,6 +107,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	}
 
 	void AskForReview () {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_ENJOYING);
 		createAskForReviewPopUp ();
 	}
 
@@ -110,13 +115,22 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	/// レビュー依頼ポップアップを表示
 	/// </summary>
 	void createAskForReviewPopUp() {
-		string title = "ありがとうございます！";
-		string content = "よかったら\n☆5レビュー、\nお願いします。";
+		string title = Const.MSG_ASKING_REVIEW_TITLE;
+		string content = Const.MSG_ASKING_REVIEW_CONTENT;
 
 		List<CustomButton> buttons = new List<CustomButton> ();
-		buttons.Add (new CustomButton ("レビューする", (int)Const.ButtonType.POSITIVE, "OpenURL"));
-		buttons.Add (new CustomButton ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
-		buttons.Add (new CustomButton ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_REVIEW_ANS_OK,
+			(int)Const.ButtonType.POSITIVE,
+			"OpenURL"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_REVIEW_ANS_NEVER,
+			(int)Const.ButtonType.DEFAULT,
+			"NoMoreReviewRequest"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_REVIEW_ANS_NO,
+			(int)Const.ButtonType.DEFAULT,
+			"CloseReviewRequest"));
 
 		// Dialog出力
 		_popUpCtrl.Open(title, content, buttons, this.gameObject);
@@ -124,6 +138,8 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	// 開く
 	void OpenURL() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_REVIEW);
+
 		_gameManager._userData.review_flg = 1;
 		_gameManager._userData.save ();
 
@@ -137,13 +153,37 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		Application.OpenURL (Const.DEV_URL);
 	}
 
+	// レビュー依頼に対して「もう表示しない」
+	void NoMoreReviewRequest() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_REVIEW_EVER);
+		NoMoreRequest ();
+	}
+	// メッセージ依頼に対して「もう表示しない」
+	void NoMoreMessageRequest() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_MESSAGE_EVER);
+		NoMoreRequest ();
+	}
+
 	// 断られた際
 	void NoMoreRequest() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_REVIEW_EVER);
+
 		_gameManager._userData.denied_flg = 1;
 		_gameManager._userData.save ();
 	}
 
+	// レビュー依頼に対して「また今度」
+	void CloseReviewRequest() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_REVIEW_NOW);
+		Close ();
+	}
 
+	// メッセージ依頼に対して「また今度」
+	void CloseMessageRequest() {
+		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_MESSAGE_NOW);
+		Close ();
+		
+	}
 	void Close() {
 		// 閉じる
 		_popUpCtrl.Close();
@@ -151,12 +191,21 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 	void createAskForMessagePopUp () {
 		string title = "";
-		string content = "よろしければ\nご意見・ご要望、\nお待ちしています。";
+		string content = Const.MSG_ASKING_MESSAGE;
 
 		List<CustomButton> buttons = new List<CustomButton> ();
-		buttons.Add (new CustomButton ("ひとこと言う", (int)Const.ButtonType.POSITIVE, "OpenDevURL"));
-		buttons.Add (new CustomButton ("もう表示しない", (int)Const.ButtonType.DEFAULT, "NoMoreRequest"));
-		buttons.Add (new CustomButton ("また今度", (int)Const.ButtonType.DEFAULT, "Close"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_MESSAGE_ANS_OK,
+			(int)Const.ButtonType.POSITIVE,
+			"OpenDevURL"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_MESSAGE_ANS_NEVER, 
+			(int)Const.ButtonType.DEFAULT, 
+			"NoMoreMessageRequest"));
+		buttons.Add (new CustomButton (
+			Const.MSG_ASKING_MESSAGE_ANS_NO,
+			(int)Const.ButtonType.DEFAULT,
+			"CloseMessageRequest"));
 
 		// YES NO ダイアログ
 		// お問合せ

@@ -86,9 +86,29 @@ public class Const {
 
 	#region SHARE
 	public static string SC_NAME		= "sc_shot.png";
-	public static string SHARE_MESSAGE 	= "テスト";
+	public static string SHARE_MESSAGE 	= "鳥獣戯画で脳トレができるゆるーいアプリ";
+
+	public static string SHARE_MESSAGE_SCORE_01 = "脳トレ鳥獣戯画で";
+	public static string SHARE_MESSAGE_SCORE_02 = "点取ったよ";
+
 	public static string APP_URL 		= "http://bit.ly/1VBDVpt"; // TEST
 	public static string DEV_URL 		= "http://bit.ly/2rsY7yY"; // FIXED
+
+	public static string MSG_ASKING_POPUP = "プレイしていただき、ありがとうございます。\n楽しんでいただけていますか？";
+	public static string MSG_ASKING_POPUP_ANS_YES 	= "はい";
+	public static string MSG_ASKING_POPUP_ANS_NO	= "そんなに…";
+
+	public static string MSG_ASKING_REVIEW_TITLE = "ありがとうございます！";
+	public static string MSG_ASKING_REVIEW_CONTENT = "よかったら\n☆5レビュー、\nお願いします。";
+	public static string MSG_ASKING_REVIEW_ANS_OK = "レビューする";
+	public static string MSG_ASKING_REVIEW_ANS_NO = "また今度";
+	public static string MSG_ASKING_REVIEW_ANS_NEVER = "もう表示しない";
+
+	public static string MSG_ASKING_MESSAGE = "よろしければ\nご意見・ご要望、\nお待ちしています。";
+	public static string MSG_ASKING_MESSAGE_ANS_OK = "ひとこと言う";
+	public static string MSG_ASKING_MESSAGE_ANS_NO = "また今度";
+	public static string MSG_ASKING_MESSAGE_ANS_NEVER = "もう表示しない";
+
 	#endregion
 
 	#region BUTTON
@@ -111,6 +131,24 @@ public class Const {
 	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
 	#endregion
 
+	#region ANALYTICS
+	public static string UA_SCORE 				= "score";
+	public static string UA_ONE_PLAY_TIME 		= "onePlayTime";
+
+	public static string UA_PRESSED_SHARE_BTN_TITLE 	= "pressedShareButtonTitle";
+	public static string UA_PRESSED_SHARE_BTN_RESULT 	= "pressedShareButtonResult";
+
+	public static string UA_ASKING_POP_UP 		= "askingPopUp";
+	public static string UA_PRESSED_ENJOYING	= "pressedEnjoying";
+	public static string UA_PRESSED_NOT_ENJOYING	= "pressedNotEnjoying";
+	public static string UA_PRESSED_REVIEW = "pressedReview";
+	public static string UA_PRESSED_NOT_REVIEW_NOW = "pressedNotReviewNow";
+	public static string UA_PRESSED_NOT_REVIEW_EVER = "pressedNotReviewEver";
+
+	public static string UA_PRESSED_MESSAGE = "pressedMessage";
+	public static string UA_PRESSED_NOT_MESSAGE_NOW = "pressedNotMessageNow";
+	public static string UA_PRESSED_NOT_MESSAGE_EVER = "pressedNotMessageEver";
+	#endregion
 
 
 }

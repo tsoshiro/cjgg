@@ -22,16 +22,16 @@ public class ScreenShotCtrl : MonoBehaviour {
 		isScreenShotSaved = true;
 	}
 
-	public void actionShare(bool pTakeScBefore = false) {
+	public void actionShare(string pMessage = "", bool pTakeScBefore = false) {
 		// pTakeScBeforeならその場でスクリーンショットを撮ってからシェア
 		if (pTakeScBefore) {
 			takeScreenShot ();
 		}
 		// シェアコルーチン開始
-		StartCoroutine (shareCoroutine ());
+		StartCoroutine (shareCoroutine (pMessage));
 	}
 
-	void share(bool pWithImage) {
+	void share(string pMessage, bool pWithImage) {
 		GameManager.GetInstance()._inputManager.disabled = false;
 		if (pWithImage) {
 			SocialConnector.SocialConnector.Share (Const.SHARE_MESSAGE,
@@ -43,7 +43,7 @@ public class ScreenShotCtrl : MonoBehaviour {
 		}
 	}
 
-	IEnumerator shareCoroutine() {
+	IEnumerator shareCoroutine(string pMessage) {
 		// 操作できなくする
 		GameManager.GetInstance()._inputManager.disabled = true;
 
@@ -56,10 +56,10 @@ public class ScreenShotCtrl : MonoBehaviour {
 		// シェア機能呼び出し
 		if (isScreenShotSaveFailed) {
 			// 失敗していた場合、画像は添付しない
-			share (false);
+			share (pMessage, false);
 		} else if (isScreenShotSaved) {
 			// 成功していれば、画像は添付する
-			share (true);
+			share (pMessage, true);
 		}
 
 		// flgをリセット
