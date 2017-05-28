@@ -70,7 +70,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 楽しんでいないとの回答に対し、意見をもらうポップアップを表示する
+	/// 楽しんでいないとの回答に対し、意見をもらうポップアップを表示する。すでにメッセージ回答済みなら何もせず閉じる
 	/// </summary>
 	void AskForMessage() {
 		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_ENJOYING);
@@ -136,21 +136,35 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		_popUpCtrl.Open(title, content, buttons, this.gameObject);
 	}
 
-	// 開く
+	// 「レビューしてください」に対して「はい」と答えたで、レビューページを開く
 	void OpenURL() {
 		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_REVIEW);
 
 		_gameManager._userData.review_flg = 1;
 		_gameManager._userData.save ();
 
+		// ポップアップを閉じてから開く
+		Close ();
+		OpenReviewURL ();
+	}
+
+	/// <summary>
+	/// レビューページを開く
+	/// </summary>
+	public void OpenReviewURL() {
 		Application.OpenURL (Const.APP_STORE_REVIEW_URL);
 	}
 
-	void OpenDevURL() {
+	/// <summary>
+	/// サポートページに遷移する
+	/// </summary>
+	void OpenSupportURL() {
 		_gameManager._userData.message_flg = 1;
 		_gameManager._userData.save ();
 
-		Application.OpenURL (Const.DEV_URL);
+		// ポップアップを閉じてから開く
+		Close ();
+		Application.OpenURL (Const.SUPPORT_URL);
 	}
 
 	// レビュー依頼に対して「もう表示しない」
@@ -170,20 +184,24 @@ public class ReviewRequestCtrl : MonoBehaviour {
 
 		_gameManager._userData.denied_flg = 1;
 		_gameManager._userData.save ();
+
+		Close ();
 	}
 
 	// レビュー依頼に対して「また今度」
 	void CloseReviewRequest() {
 		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_REVIEW_NOW);
+
 		Close ();
 	}
 
 	// メッセージ依頼に対して「また今度」
 	void CloseMessageRequest() {
 		_gameManager._analyticsManager.SendCounterEvent (Const.UA_PRESSED_NOT_MESSAGE_NOW);
+
 		Close ();
-		
 	}
+
 	void Close() {
 		// 閉じる
 		_popUpCtrl.Close();
@@ -197,7 +215,7 @@ public class ReviewRequestCtrl : MonoBehaviour {
 		buttons.Add (new CustomButton (
 			Const.MSG_ASKING_MESSAGE_ANS_OK,
 			(int)Const.ButtonType.POSITIVE,
-			"OpenDevURL"));
+			"OpenSupportURL"));
 		buttons.Add (new CustomButton (
 			Const.MSG_ASKING_MESSAGE_ANS_NEVER, 
 			(int)Const.ButtonType.DEFAULT, 

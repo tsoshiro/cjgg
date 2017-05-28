@@ -103,8 +103,8 @@ public class Const {
 		+APP_ID
 		+"&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software";
 
-	public static string DEV_URL 		= "http://bit.ly/2rsY7yY"; // FIXED
-	public static string SUPPORT_URL	= "http://bit.ly/2i4YJtp";
+	public static string DEV_URL 		= "http://bit.ly/2rsY7yY"; // 
+	public static string SUPPORT_URL	= "http://bit.ly/2i4YJtp"; // サポートURL
 	public static string FEATURE_URL	= "http://bit.ly/2qqwyFp"; // ダ鳥獣戯画サイト
 	public static string PIXELBEAT_URL	= "http://bit.ly/2qnjkNB"; // pixelbeat
 
@@ -137,12 +137,12 @@ public class Const {
 	public static int AD_INTER_NUM_END = 0;
 	public static int AD_INTER_NUM_BG 	= 1;
 
-	public static int AD_INTERVAL_INTER = 5;
+	public static int AD_INTERVAL_INTER = 5; // インタースティシャル広告を表示する頻度
 	#endregion
 
 	#region REVIEW
-	public static int INTERVAL_REVIEW_REQUEST = 10;
-	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100;
+	public static int INTERVAL_REVIEW_REQUEST = 12; // レビュー依頼をする頻度
+	public static int INTERVAL_REVIEW_REQUEST_CANCELED_ONCE = 100; // 断られた後に再度レビュー依頼をする頻度
 	#endregion
 
 	#region ANALYTICS

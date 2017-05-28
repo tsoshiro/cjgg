@@ -619,7 +619,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	}
 
 	void actionButtonReview() {
-		
+		_reviewRequestCtrl.OpenReviewURL ();
 	}
 		
 	void actionButtonSound() {
@@ -628,6 +628,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 
 	void actionButtonOtherGames() {
 		Application.OpenURL (Const.DEV_URL);
+	}
+
+	void actionButtonPixelBeat() {
+		Application.OpenURL (Const.PIXELBEAT_URL);
+	}
+
+	void actionButtonFeature() {
+		Application.OpenURL (Const.FEATURE_URL);
 	}
 
 	// STAND_BY SCENE
